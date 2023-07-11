@@ -1,0 +1,1244 @@
+[
+  {
+    "coords": [
+      14.780658081000038,
+      49.550754374800036
+    ],
+    "old_name": "Czech Republic",
+    "new_name": "Czechia",
+    "change_date": 2016
+  },
+  {
+    "coords": [
+      -24.282883267599903,
+      15.761004950000057
+    ],
+    "old_name": "Cape Verde",
+    "new_name": "Cabo Verde",
+    "change_date": 2013
+  },
+  {
+    "coords": [
+      28.841267537400135,
+      6.98058278440017
+    ],
+    "old_name": "Sudan",
+    "new_name": "South Sudan",
+    "change_date": 2011
+  },
+  {
+    "coords": [
+      125.34332116,
+      -8.95474611159987
+    ],
+    "old_name": [
+      "Indonesia"
+    ],
+    "new_name": "East Timor",
+    "change_date": 1999
+  },
+  {
+    "coords": [
+      19.838511648811902,
+      -5.924898213199884
+    ],
+    "old_name": "Zaire",
+    "new_name": "Democratic Republic of the Congo",
+    "change_date": 1997
+  },
+  {
+    "coords": [
+      14.780658081000038,
+      49.550754374800036
+    ],
+    "old_name": "Czechoslovakia",
+    "new_name": "Czech Republic",
+    "change_date": 1993
+  },
+  {
+    "coords": [
+      39.1037367730001,
+      14.617944399400063
+    ],
+    "old_name": [
+      "Ethiopia"
+    ],
+    "new_name": "Eritrea",
+    "change_date": 1993
+  },
+  {
+    "coords": [
+      19.1225429280001,
+      48.49071571900006
+    ],
+    "old_name": "Czechoslovakia",
+    "new_name": "Slovakia",
+    "change_date": 1993
+  },
+  {
+    "coords": [
+      20.500815389000103,
+      43.8105156046001
+    ],
+    "old_name": [
+      "Yugoslavia"
+    ],
+    "new_name": "Serbia",
+    "change_date": 1992
+  },
+  {
+    "coords": [
+      17.277198201200058,
+      43.6493368128002
+    ],
+    "old_name": [
+      "Yugoslavia"
+    ],
+    "new_name": "Bosnia-Herzegovina",
+    "change_date": 1992
+  },
+  {
+    "coords": [
+      15.864020544200102,
+      44.0685879556001
+    ],
+    "old_name": [
+      "Yugoslavia"
+    ],
+    "new_name": "Croatia",
+    "change_date": 1992
+  },
+  {
+    "coords": [
+      21.470327270600098,
+      41.4577703254001
+    ],
+    "old_name": [
+      "Yugoslavia"
+    ],
+    "new_name": "Macedonia",
+    "change_date": 1992
+  },
+  {
+    "coords": [
+      14.625277384200103,
+      45.999766988400005
+    ],
+    "old_name": [
+      "Yugoslavia"
+    ],
+    "new_name": "Slovenia",
+    "change_date": 1992
+  },
+  {
+    "coords": [
+      20.500815389000103,
+      43.8105156046001
+    ],
+    "old_name": [
+      "Yugoslavia"
+    ],
+    "new_name": "Serbia",
+    "change_date": 1992
+  },
+  {
+    "coords": [
+      44.702821330000106,
+      39.834401713600144
+    ],
+    "old_name": "Armenian S.S.R",
+    "new_name": "Armenia",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      45,
+      37.666667
+    ],
+    "old_name": "Azerbaydjzhan S.S.R",
+    "new_name": "Azerbaijan",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      26.98719982900004,
+      53.203823385200096
+    ],
+    "old_name": "Byelorussian S.S.R",
+    "new_name": "Belarus",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      24.3740106160001,
+      58.37784495260011
+    ],
+    "old_name": "Estonian S.S.R",
+    "new_name": "Estonia",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      42.6695070536539,
+      42.056803528000096
+    ],
+    "old_name": "Georgian S.S.R",
+    "new_name": "Georgia",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      62.81648571780005,
+      46.524613505200094
+    ],
+    "old_name": "Kazakh S.S.R",
+    "new_name": "Kazakhstan",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      73.63880187960011,
+      40.8182227986001
+    ],
+    "old_name": "Kirghiz S.S.R",
+    "new_name": "Kyrgyzstan",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      23.8680685580001,
+      56.6302498992001
+    ],
+    "old_name": "Latvian S.S.R",
+    "new_name": "Latvia",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      23.27502932273748,
+      54.909145650400106
+    ],
+    "old_name": "Lithuanian S.S.R",
+    "new_name": "Lithuania",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      28.02336397280004,
+      46.67147792580005
+    ],
+    "old_name": "Moldavian S.S.R",
+    "new_name": "Moldova",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      83.76572902380006,
+      57.459092348400155
+    ],
+    "old_name": "Russian S.S.R",
+    "new_name": "Russia",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      70.47126395660015,
+      38.42317519140016
+    ],
+    "old_name": "Tajik S.S.R",
+    "new_name": "Tajikistan",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      29.34352111820014,
+      47.57620904900004
+    ],
+    "old_name": "Ukrainian S.S.R",
+    "new_name": "Ukraine",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      62.84495943140014,
+      40.534576029600046
+    ],
+    "old_name": "Uzbek S.S.R",
+    "new_name": "Uzbekistan",
+    "change_date": 1991
+  },
+  {
+    "coords": [
+      9.520317667600107,
+      50.388806297399995
+    ],
+    "old_name": "East Germany",
+    "new_name": "Germany",
+    "change_date": 1990
+  },
+  {
+    "coords": [
+      9.520317667600107,
+      50.388806297399995
+    ],
+    "old_name": "West Germany",
+    "new_name": "Germany",
+    "change_date": 1990
+  },
+  {
+    "coords": [
+      17.1344850624001,
+      -24.1560438027999
+    ],
+    "old_name": "Southwest Africa",
+    "new_name": "Namibia",
+    "change_date": 1990
+  },
+  {
+    "coords": [
+      47.34356530040014,
+      14.865121208400101
+    ],
+    "old_name": "North Yemen",
+    "new_name": "Yemen",
+    "change_date": 1990
+  },
+  {
+    "coords": [
+      47.34356530040014,
+      14.865121208400101
+    ],
+    "old_name": "South Yemen",
+    "new_name": "Yemen",
+    "change_date": 1990
+  },
+  {
+    "coords": [
+      167.9812606126,
+      8.588478908600134
+    ],
+    "old_name": "Marshall Islands (U.S.)",
+    "new_name": "Marshall Islands",
+    "change_date": 1986
+  },
+  {
+    "coords": [
+      148.0569116544,
+      4.461127020000141
+    ],
+    "old_name": "Federated States of Micronesia",
+    "new_name": "Federated States of Micronesia (U.S.)",
+    "change_date": 1986
+  },
+  {
+    "coords": [
+      -62.7313533189999,
+      17.2266543638001
+    ],
+    "old_name": "Leeward Islands (Br.)",
+    "new_name": "St. Kitts and Nevis",
+    "change_date": 1983
+  },
+  {
+    "coords": [
+      -61.8035294259999,
+      17.2846214864001
+    ],
+    "old_name": "Antigua (Br)",
+    "new_name": "Antigua and Barbuda",
+    "change_date": 1981
+  },
+  {
+    "coords": [
+      -61.8035294259999,
+      17.2846214864001
+    ],
+    "old_name": "Barbuda (Br)",
+    "new_name": "Antigua and Barbuda",
+    "change_date": 1981
+  },
+  {
+    "coords": [
+      -88.6551355015999,
+      16.9240947070001
+    ],
+    "old_name": "British Honduras",
+    "new_name": "Belize",
+    "change_date": 1981
+  },
+  {
+    "coords": [
+      167.8718856126,
+      -17.37781340919986
+    ],
+    "old_name": "New Hebrides Islands (Br. & Fr.)",
+    "new_name": "Vanuatu",
+    "change_date": 1980
+  },
+  {
+    "coords": [
+      28.348729126200077,
+      -19.684327087799897
+    ],
+    "old_name": "Rhodesia",
+    "new_name": "Zimbabwe",
+    "change_date": 1980
+  },
+  {
+    "coords": [
+      -33.985674608400004,
+      -4.9874325501999
+    ],
+    "old_name": "Gilbert Is. and Phoenix Is. (Br.)",
+    "new_name": "Kiribati",
+    "change_date": 1979
+  },
+  {
+    "coords": [
+      -60.9667,
+      13.8833
+    ],
+    "old_name": "St. Lucia (Br.)",
+    "new_name": "St. Lucia",
+    "change_date": 1979
+  },
+  {
+    "coords": [
+      -61.32546952999991,
+      12.903395900800101
+    ],
+    "old_name": "St. Vincent (Br.)",
+    "new_name": "St. Vincent and the Grenadines",
+    "change_date": 1979
+  },
+  {
+    "coords": [
+      -61.39305579339991,
+      15.374627996400042
+    ],
+    "old_name": "Dominica (Br.)",
+    "new_name": "Dominica",
+    "change_date": 1978
+  },
+  {
+    "coords": [
+      160.8351343106,
+      -10.014320570799864
+    ],
+    "old_name": "Solomon Islands (Br.)",
+    "new_name": "Solomon Islands",
+    "change_date": 1978
+  },
+  {
+    "coords": [
+      177.63785241,
+      -7.923402602199829
+    ],
+    "old_name": "Ellice Is. (Br.)",
+    "new_name": "Tuvalu",
+    "change_date": 1978
+  },
+  {
+    "coords": [
+      42.4169508028001,
+      11.6410599594001
+    ],
+    "old_name": "French Somaliland",
+    "new_name": "Djibouti",
+    "change_date": 1977
+  },
+  {
+    "coords": [
+      50.2393986340002,
+      -7.369773044399897
+    ],
+    "old_name": "Seychelles (Br.)",
+    "new_name": "Seychelles",
+    "change_date": 1976
+  },
+  {
+    "coords": [
+      50.2393986340002,
+      -7.369773044399897
+    ],
+    "old_name": "Seychelle Dependencies (Br.)",
+    "new_name": "Seychelles",
+    "change_date": 1976
+  },
+  {
+    "coords": [
+      105.0601622286,
+      14.485857161600132
+    ],
+    "old_name": "North Vietnam",
+    "new_name": "Vietnam",
+    "change_date": 1976
+  },
+  {
+    "coords": [
+      105.0601622286,
+      14.485857161600132
+    ],
+    "old_name": "South Vietnam",
+    "new_name": "Vietnam",
+    "change_date": 1976
+  },
+  {
+    "coords": [
+      -13.5,
+      25
+    ],
+    "old_name": "Rio de Oro",
+    "new_name": "Western Sahara",
+    "change_date": 1976
+  },
+  {
+    "coords": [
+      -13.5,
+      25
+    ],
+    "old_name": "Spanish Sahara",
+    "new_name": "Rio de Oro",
+    "change_date": 1976
+  },
+  {
+    "coords": [
+      -24.282883267599903,
+      15.761004950000057
+    ],
+    "old_name": "Cape Verde (Port.)",
+    "new_name": "Cape Verde",
+    "change_date": 1975
+  },
+  {
+    "coords": [
+      43.73956139420016,
+      -11.9726864563999
+    ],
+    "old_name": "Iles Comore (Fr.)",
+    "new_name": "Comoros",
+    "change_date": 1975
+  },
+  {
+    "coords": [
+      146.8965426,
+      -7.520342706199831
+    ],
+    "old_name": "Papua (Austr.)",
+    "new_name": "Papua New Guinea",
+    "change_date": 1975
+  },
+  {
+    "coords": [
+      160.8351343106,
+      -10.014320570799864
+    ],
+    "old_name": "Solomon Islands (Br.)",
+    "new_name": "Solomon Islands",
+    "change_date": 1978
+  },
+  {
+    "coords": [
+      -56.43515770339991,
+      3.504733571400094
+    ],
+    "old_name": "Dutch Guiana",
+    "new_name": "Suriname",
+    "change_date": 1975
+  },
+  {
+    "coords": [
+      -61.642958136999894,
+      12.2135928406001
+    ],
+    "old_name": "Grenada (Br.)",
+    "new_name": "Grenada",
+    "change_date": 1974
+  },
+  {
+    "coords": [
+      -15.50134679948402,
+      11.6283569990001
+    ],
+    "old_name": "Portuguese Guinea",
+    "new_name": "Guinea-Bissau",
+    "change_date": 1974
+  },
+  {
+    "coords": [
+      -76,
+      25.0667
+    ],
+    "old_name": "Bahama Is. (Br.)",
+    "new_name": "Bahamas",
+    "change_date": 1973
+  },
+  {
+    "coords": [
+      89.87021423400014,
+      23.09264654940004
+    ],
+    "old_name": "East Pakistan",
+    "new_name": "Bangladesh",
+    "change_date": 1972
+  },
+  {
+    "coords": [
+      51.09721113340004,
+      25.19996356460006
+    ],
+    "old_name": [
+      "Hadhramaut"
+    ],
+    "new_name": "Qatar",
+    "change_date": 1971
+  },
+  {
+    "coords": [
+      53.495062696000105,
+      24.002484354600096
+    ],
+    "old_name": [
+      "Oman"
+    ],
+    "new_name": "United Arab Emirates",
+    "change_date": 1971
+  },
+  {
+    "coords": [
+      19.838511648811902,
+      -5.924898213199884
+    ],
+    "old_name": "Democratic Republic of the Congo",
+    "new_name": "Zaire",
+    "change_date": 1971
+  },
+  {
+    "coords": [
+      -8.0,
+      -18.0167782533999
+    ],
+    "old_name": "Fiji Is. (Br.)",
+    "new_name": "Fiji",
+    "change_date": 1970
+  },
+  {
+    "coords": [
+      -175.2972875646,
+      -19.627080987999896
+    ],
+    "old_name": "Tonga Is. (Br.)",
+    "new_name": "Tonga",
+    "change_date": 1970
+  },
+  {
+    "coords": [
+      8.7,
+      3.5
+    ],
+    "old_name": "Fernando Po",
+    "new_name": "Equitorial Guinea",
+    "change_date": 1968
+  },
+  {
+    "coords": [
+      10.5,
+      1.5
+    ],
+    "old_name": "Rio Muni",
+    "new_name": "Equitorial Guinea",
+    "change_date": 1968
+  },
+  {
+    "coords": [
+      8.78333,
+      3.75
+    ],
+    "old_name": "Spanish Guinea",
+    "new_name": "Equitorial Guinea",
+    "change_date": 1968
+  },
+  {
+    "coords": [
+      59.31207115980012,
+      -16.439971612599898
+    ],
+    "old_name": "Mauritius (Br.)",
+    "new_name": "Mauritius",
+    "change_date": 1968
+  },
+  {
+    "coords": [
+      166.9275008474,
+      -0.5272763001999093
+    ],
+    "old_name": "Nauru (Br.)",
+    "new_name": "Nauru",
+    "change_date": 1968
+  },
+  {
+    "coords": [
+      8.7,
+      3.5
+    ],
+    "old_name": "Fernando Po",
+    "new_name": "Equitorial Guinea",
+    "change_date": 1968
+  },
+  {
+    "coords": [
+      45.0333,
+      12.8
+    ],
+    "old_name": "Hadhramaut",
+    "new_name": "South Yemen",
+    "change_date": 1967
+  },
+  {
+    "coords": [
+      45.0333,
+      12.8
+    ],
+    "old_name": "Aden",
+    "new_name": "South Yemen",
+    "change_date": 1967
+  },
+  {
+    "coords": [
+      -59.56328691319991,
+      13.168524481399999
+    ],
+    "old_name": "Barbados (Br.)",
+    "new_name": "Barbados",
+    "change_date": 1966
+  },
+  {
+    "coords": [
+      23.7270370684001,
+      -23.247799499199964
+    ],
+    "old_name": "Bechuanaland",
+    "new_name": "Botswana",
+    "change_date": 1966
+  },
+  {
+    "coords": [
+      -59.43075528979996,
+      4.134696189800127
+    ],
+    "old_name": "Guiana",
+    "new_name": "Guyana",
+    "change_date": 1966
+  },
+  {
+    "coords": [
+      27.9756562910001,
+      -29.823584167199936
+    ],
+    "old_name": "Basutoland",
+    "new_name": "Lesotho",
+    "change_date": 1966
+  },
+  {
+    "coords": [
+      73.11216881600008,
+      2.4297549498001194
+    ],
+    "old_name": "Maldive Islands",
+    "new_name": "Maldives",
+    "change_date": 1965
+  },
+  {
+    "coords": [
+      28.348729126200077,
+      -19.684327087799897
+    ],
+    "old_name": "Southern Rhodesia",
+    "new_name": "Rhodesia",
+    "change_date": 1965
+  },
+  {
+    "coords": [
+      33.95970446820016,
+      -14.033695251599863
+    ],
+    "old_name": "Nyasaland",
+    "new_name": "Malawi",
+    "change_date": 1964
+  },
+  {
+    "coords": [
+      14.3370223318001,
+      35.91096425980004
+    ],
+    "old_name": "Malta (Br.)",
+    "new_name": "Malta",
+    "change_date": 1964
+  },
+  {
+    "coords": [
+      33.7723757702001,
+      -7.433095561199869
+    ],
+    "old_name": "Tanganyika",
+    "new_name": "Tanzania",
+    "change_date": 1964
+  },
+  {
+    "coords": [
+      33.7723757702001,
+      -7.433095561199869
+    ],
+    "old_name": "Zanzibar",
+    "new_name": "Tanzania",
+    "change_date": 1964
+  },
+  {
+    "coords": [
+      26.657607543800054,
+      -14.1191887403999
+    ],
+    "old_name": "Northern Rhodesia",
+    "new_name": "Zambia",
+    "change_date": 1964
+  },
+  {
+    "coords": [
+      2,
+      36.7
+    ],
+    "old_name": "French West Africa",
+    "new_name": "Algeria",
+    "change_date": 1962
+  },
+  {
+    "coords": [
+      29.7257200110001,
+      -3.5992313845999058
+    ],
+    "old_name": "Urundi",
+    "new_name": "Burundi",
+    "change_date": 1962
+  },
+  {
+    "coords": [
+      -77.49998938679991,
+      18.0319522156
+    ],
+    "old_name": "Jamaica (Br.)",
+    "new_name": "Jamaica",
+    "change_date": 1962
+  },
+  {
+    "coords": [
+      29.669465047000095,
+      -2.119590433799882
+    ],
+    "old_name": "Ruanda",
+    "new_name": "Rwanda",
+    "change_date": 1962
+  },
+  {
+    "coords": [
+      -75.5454,
+      10.42052
+    ],
+    "old_name": "Trinidad (Br.)",
+    "new_name": "Trinidad",
+    "change_date": 1962
+  },
+  {
+    "coords": [
+      -60.666,
+      11.25
+    ],
+    "old_name": "Tobago (Br.)",
+    "new_name": "Tobago",
+    "change_date": 1962
+  },
+  {
+    "coords": [
+      -172.2446264318,
+      -13.81682708099996
+    ],
+    "old_name": "Samoa Is. (N.Z.)",
+    "new_name": "Western Samoa",
+    "change_date": 1961
+  },
+  {
+    "coords": [
+      33.7723757702001,
+      -7.433095561199869
+    ],
+    "old_name": "Tanganyika Territory",
+    "new_name": "Tanganyika",
+    "change_date": 1961
+  },
+  {
+    "coords": [
+      2.18,
+      7.45
+    ],
+    "old_name": "Dahomey",
+    "new_name": "Benin",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      -2.357479289399892,
+      11.667092590200113
+    ],
+    "old_name": "Upper Volta",
+    "new_name": "Burkina",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      11.58612308320007,
+      6.2251870324000835
+    ],
+    "old_name": "French Equitorial Africa",
+    "new_name": "Cameroon",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      19.608880167200102,
+      5.742203593200076
+    ],
+    "old_name": "Oubangi",
+    "new_name": "Central African Republic",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      19.608880167200102,
+      5.742203593200076
+    ],
+    "old_name": "Chari",
+    "new_name": "Central African Republic",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      17.6632728270001,
+      13.851228007000111
+    ],
+    "old_name": "French Equitorial Africa",
+    "new_name": "Chad",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      19.838511648811902,
+      -5.924898213199884
+    ],
+    "old_name": [
+      "Belgian Congo"
+    ],
+    "new_name": "Democratic Republic of the Congo",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      11.016936560000124, 
+      -1.4331157075417882
+    ],
+    "old_name": [
+      "Gabon"
+    ],
+    "new_name": "Peoples Republic of the Congo",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      33.00269616020016,
+      34.84984451010218
+    ],
+    "old_name": "Cyprus (Br.)",
+    "new_name": "Cyprus",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      11.016936560000124,
+      -1.4331157075417882
+    ],
+    "old_name": "French Equitorial Africa",
+    "new_name": "Gabon",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      -6.173763142999923,
+      6.897028222600118
+    ],
+    "old_name": [
+      "French West Africa"
+    ],
+    "new_name": "Cote D'Ivoire",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      -5.6642231851998925,
+      16.0820582486001
+    ],
+    "old_name": "French Sudan",
+    "new_name": "Mali",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      -12.177350178799902,
+      19.754805644000157
+    ],
+    "old_name": [
+      "French West Africa"
+    ],
+    "new_name": "Mauritania",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      6.479893432200106,
+      16.42440427640004
+    ],
+    "old_name": [
+      "French West Africa"
+    ],
+    "new_name": "Niger",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      45.14604635000016,
+      3.777877559413496
+    ],
+    "old_name": "Italian Somaliland",
+    "new_name": "Somalia",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      45.14604635000016,
+      3.777877559413496
+    ],
+    "old_name": "English Somaliland",
+    "new_name": "Somalia",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      0.61327478060008,
+      8.11428665577224
+    ],
+    "old_name": "Dahomey",
+    "new_name": "Togo",
+    "change_date": 1960
+  },
+  {
+    "coords": [
+      -12.113654260999924,
+      9.38348004200007
+    ],
+    "old_name": "Fr. Guinea",
+    "new_name": "Guinea",
+    "change_date": 1958
+  },
+  {
+    "coords": [
+      -1.4823182371999781,
+      7.307451725000061
+    ],
+    "old_name": "Ashanti",
+    "new_name": "Ghana",
+    "change_date": 1958
+  },
+  {
+    "coords": [
+      -1.4823182371999781,
+      7.307451725000061
+    ],
+    "old_name": "Gold Coast",
+    "new_name": "Ghana",
+    "change_date": 1958
+  },
+  {
+    "coords": [
+      107.49837155000007,
+      3.4531343410001023
+    ],
+    "old_name": "Malay States",
+    "new_name": "Malasia",
+    "change_date": 1957
+  },
+  {
+    "coords": [
+      -7.99994,
+      31.63416
+    ],
+    "old_name": [
+      "French West Africa"
+    ],
+    "new_name": "Morroco",
+    "change_date": 1956
+  },
+  {
+    "coords": [
+      28.52720991760014,
+      14.0997709756001
+    ],
+    "old_name": "Anglo-Egyptian Sudan",
+    "new_name": "Sudan",
+    "change_date": 1956
+  },
+  {
+    "coords": [
+      105.85,
+      21.0333
+    ],
+    "old_name": "Vietnam",
+    "new_name": "North Vietnam",
+    "change_date": 1954
+  },
+  {
+    "coords": [
+      106.667,
+      10.75
+    ],
+    "old_name": "Vietnam",
+    "new_name": "South Vietnam",
+    "change_date": 1954
+  },
+  {
+    "coords": [
+      127.5131791848,
+      35.36827863318996
+    ],
+    "old_name": "Korea",
+    "new_name": "North Korea",
+    "change_date": 1953
+  },
+  {
+    "coords": [
+      127.5131791848,
+      35.36827863318996
+    ],
+    "old_name": "Korea",
+    "new_name": "South Korea",
+    "change_date": 1953
+  },
+  {
+    "coords": [
+      104.43226078320001,
+      12.131296814000102
+    ],
+    "old_name": [
+      "French Indo-China"
+    ],
+    "new_name": "Cambodia",
+    "change_date": 1949
+  },
+  {
+    "coords": [
+      13.4,
+      52.5167
+    ],
+    "old_name": "Germany",
+    "new_name": "East Germany",
+    "change_date": 1949
+  },
+  {
+    "coords": [
+      7.09972,
+      50.7339
+    ],
+    "old_name": "Germany",
+    "new_name": "West Germany",
+    "change_date": 1949
+  },
+  {
+    "coords": [
+      113.39867435260007,
+      -4.18953215919984
+    ],
+    "old_name": "Netherland Indies",
+    "new_name": "Indonesia",
+    "change_date": 1949
+  },
+  {
+    "coords": [
+      103.1239892172,
+      17.3476915898001
+    ],
+    "old_name": [
+      "French Indo-China"
+    ],
+    "new_name": "Laos",
+    "change_date": 1949
+  },
+  {
+    "coords": [
+      34.904239534200144,
+      31.0565035638001
+    ],
+    "old_name": "Palestine",
+    "new_name": "Israel",
+    "change_date": 1948
+  },
+  {
+    "coords": [
+      80.5495874360001,
+      7.486070054600151
+    ],
+    "old_name": "Ceylon",
+    "new_name": "Sri Lanka",
+    "change_date": 1948
+  },
+  {
+    "coords": [
+      67.32621561700014,
+      29.038508691200104
+    ],
+    "old_name": "Baluchistan",
+    "new_name": "Pakistan",
+    "change_date": 1947
+  },
+  {
+    "coords": [
+      36.68643072800863,
+      30.862644430000046
+    ],
+    "old_name": "Trans Jordan",
+    "new_name": "Jordan",
+    "change_date": 1946
+  },
+  {
+    "coords": [
+      127.5131791848,
+      35.36827863318996
+    ],
+    "old_name": "Chosen",
+    "new_name": "Korea",
+    "change_date": 1945
+  },
+  {
+    "coords": [
+      39.1037367730001,
+      14.617944399400063
+    ],
+    "old_name": "Italian East Africa",
+    "new_name": "Eritrea",
+    "change_date": 1941
+  },
+  {
+    "coords": [
+      38.9855475666001,
+      7.993812927400095
+    ],
+    "old_name": "Italian East Africa",
+    "new_name": "Ethiopia",
+    "change_date": 1941
+  }
+]
