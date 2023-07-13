@@ -1,5 +1,6 @@
 import json
 import matplotlib.pyplot as plt
+from fuzzywuzzy import fuzz
 
 class NamedAccount:
     def __init__(self, variant_name, year, map_id):
@@ -26,6 +27,11 @@ def list_accounts_in_order(filename):
         accounts_list.sort()
         return accounts_list
 def plot_named_accounts(filename):
+    """
+    Purpose: Visualize a timeline of named accounts of a place, by generating a plot of years labeled with names
+    Parameters: filename, the name of the json file of named accounts to graph
+    Returns: None, creates a pyplot showing dates on the x-axis, labeling variant names on the y axis.
+    """
     accounts = list_accounts_in_order(filename)
     variant_names = [account.variant_name for account in accounts]
     years = [account.year for account in accounts]
@@ -45,12 +51,14 @@ def plot_named_accounts(filename):
     plt.scatter(years, height_values)
 
     # Adding labels to each point
-    for i in range(len(variant_names)):
-        plt.annotate(variant_names[i], (years[i], height_values[i]), textcoords="offset points", xytext=(0,10), ha='center')
+    left_edge = min(years)
+    for variant in variations_to_heights_dict:
+        plt.annotate(variant, (left_edge, variations_to_heights_dict[variant]))
 
     # Axes labels and title
     plt.xlabel('Map dates')
-    plt.title('Plot of Points in a Line with Labels and Colors')
+    plt.ylabel("Name Variations")
+    plt.title('Plot of Named Accounts in ' + filename)
 
     # Display the plot
     plt.show()
@@ -60,7 +68,7 @@ def plot_named_accounts(filename):
 
 if __name__ == "__main__":
     #cities = ["tokyo", "mumbai", "oslo", "kinshasa", "tallinn", "dushanbe", "ottawa", "istanbul", "volgograd", "leningrad", "nashville", "saigon", "yekaterinburg"]
-    cities = ["volgograd"]
+    cities = ["ottawa"]
     for city in cities:
         accounts = list_accounts_in_order("analyzed_cities/" + city + "_dates.json")
         plot_named_accounts("analyzed_cities/" + city + "_dates.json")
