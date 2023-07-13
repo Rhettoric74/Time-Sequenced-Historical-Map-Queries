@@ -1,13 +1,16 @@
 import os
 import json
 import geo_entity
-import coordinate_geometry
+from fuzzywuzzy import fuzz
 from extract_year import extract_years
-def feature_query(dir_name, feature_name):
+def feature_query(dir_name, feature_name, ratio_threshold = 85):
     """
     Purpose: query a directory of geojson files for files containing a specific named feature
     Parameters: dir_name, the name of the directory to query
                 feature_name, the name of the feature to search for
+                ratio_threshold (> 0, <= 100), the threshold for comparing map text to variant names required to consider
+                them to match.
+                That is, if fuzz.ratio(text, variant) is greater than this threshold, we will consider them to match. 
     returns: a dictionary of each variant of the feature name matched with the map ids of maps that contain that variant.
     """
     entity = geo_entity.GeoEntity(feature_name)
@@ -26,19 +29,21 @@ def feature_query(dir_name, feature_name):
             data = json.load(json_file)
         # iterate over all features in the file
         for feature in data["features"]:
-            text = str(feature["properties"]["text"])
-            post_ocr = str(feature["properties"]["postocr_label"])
-            if (text in entity.variations or text.lower() in entity.variations or text.upper() in entity.variations
-                            or post_ocr in entity.variations or post_ocr.lower() in entity.variations or post_ocr.upper() in entity.variations):
-                #if the feature is found, and close to the coordinates of the entity found by whg, add the file to the list
-                if entity.within_bounding(feature["geometry"]["coordinates"]):
-                    print(feature["properties"]["text"])
-                    print(entity.largest_bounding)
-                    # add the file to the dictionary mapped with the variant found
-                    if post_ocr.upper() in files:
-                        files[post_ocr.upper()].append(file.strip(".geojson"))
-                    else:
-                        files[post_ocr.upper()] = [file.strip(".geojson")]
+            text = str(feature["properties"]["text"]).upper()
+            post_ocr = str(feature["properties"]["postocr_label"]).upper()
+            # use fuzzy string comparison to detect a match with known name variants
+            for variant in entity.variations:
+                if fuzz.ratio(post_ocr, variant) > ratio_threshold or fuzz.ratio(text, variant) > ratio_threshold:
+                    # the text is considered to match the variant
+                    # if the feature is found, and close to the coordinates of the entity found by whg, add the file to the list
+                    if entity.within_bounding(feature["geometry"]["coordinates"]):
+                        print(post_ocr + ": " + variant)
+                        print(entity.largest_bounding)
+                        # add the file to the dictionary mapped with the variant found
+                        if variant in files:
+                            files[variant].append(file.strip(".geojson"))
+                        else:
+                            files[variant] = [file.strip(".geojson")]
     # return the list of files
     return files
 def dated_query(dir_name, feature_name):
@@ -56,9 +61,9 @@ def dated_query(dir_name, feature_name):
 
 
 if __name__ == "__main__":
-    cities = ["mexico", "brasilia", "sucre"]
+    cities = ["tokyo"]
     for city in cities:
-        results = dated_query("geojson_testr_syn", city)
+        results = dated_query("japan", city)
         print(results)
         matched_with_city = {city:results}
         with open("analyzed_cities/" + city + "_dates.json", "w") as fp:

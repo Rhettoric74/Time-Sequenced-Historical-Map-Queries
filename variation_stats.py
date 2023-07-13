@@ -27,18 +27,26 @@ def list_accounts_in_order(filename):
         return accounts_list
 def plot_named_accounts(filename):
     accounts = list_accounts_in_order(filename)
-    years , height_vals = [(account.year, 1) for account in accounts]
-
-    # Labels and colors
-    labels = ['A', 'B', 'C', 'D', 'E']
-    colors = ['red', 'green', 'blue', 'orange', 'purple']
-
+    variant_names = [account.variant_name for account in accounts]
+    years = [account.year for account in accounts]
+    # assign each variant name a numerical value to graph in the y axis
+    variations_to_heights_dict = {}
+    cur_highest = 1
+    height_values = []
+    for account in accounts:
+        if account.variant_name not in variations_to_heights_dict:
+            variations_to_heights_dict[account.variant_name] = cur_highest
+            height_values.append(cur_highest)
+            cur_highest += 1
+        else:
+            height_values.append(variations_to_heights_dict[account.variant_name])
+    
     # Plotting
-    plt.scatter(years, height_vals, c=colors)
+    plt.scatter(years, height_values)
 
     # Adding labels to each point
-    for i, label in enumerate(labels):
-        plt.annotate(label, (x[i], y[i]), textcoords="offset points", xytext=(0,10), ha='center')
+    for i in range(len(variant_names)):
+        plt.annotate(variant_names[i], (years[i], height_values[i]), textcoords="offset points", xytext=(0,10), ha='center')
 
     # Axes labels and title
     plt.xlabel('Map dates')
@@ -51,9 +59,11 @@ def plot_named_accounts(filename):
 
 
 if __name__ == "__main__":
-    cities = ["tokyo", "mumbai", "oslo", "kinshasa", "tallinn", "dushanbe", "ottawa", "istanbul", "volgograd", "leningrad", "nashville", "saigon", "yekaterinburg"]
+    #cities = ["tokyo", "mumbai", "oslo", "kinshasa", "tallinn", "dushanbe", "ottawa", "istanbul", "volgograd", "leningrad", "nashville", "saigon", "yekaterinburg"]
+    cities = ["volgograd"]
     for city in cities:
         accounts = list_accounts_in_order("analyzed_cities/" + city + "_dates.json")
+        plot_named_accounts("analyzed_cities/" + city + "_dates.json")
         print(accounts)
         print(len(accounts))
         

@@ -68,6 +68,7 @@ def create_region_maps_folder(region_name, scale_threshold = None, filename = "l
             print(e)
 
 if __name__ == "__main__":
-    cities_to_sample = ["beijing", "marseille", "barcelona", "havanna", "quito"]
+    """ cities_to_sample = ["beijing", "marseille", "barcelona", "havanna", "quito"]
     for city in cities_to_sample:
-        create_region_maps_folder(city)
+        create_region_maps_folder(city) """
+    create_region_maps_folder("japan")

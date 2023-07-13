@@ -14,10 +14,10 @@ class GeoEntity:
         if resulting_geojson == None:
             raise Exception("feature not in whg database")
         self.geolocation = coordinate_geometry.get_centroid(resulting_geojson["geometry"]["coordinates"])
-        self.variations = resulting_geojson["properties"]["variants"]
+        self.variations = [variant.upper() for variant in resulting_geojson["properties"]["variants"]]
         self.place_id = resulting_geojson["properties"]["place_id"]
-        if name not in self.variations:
-            self.variations.append(name)
+        if name.upper() not in self.variations:
+            self.variations.append(name.upper())
         self.fclass = resulting_geojson["properties"]["fclasses"][0]
         self.largest_bounding = coordinate_geometry.extract_bounds(resulting_geojson["geometry"]["coordinates"], self.fclass)
     def within_bounding(self, points):
