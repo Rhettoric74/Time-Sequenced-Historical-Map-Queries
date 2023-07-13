@@ -44,7 +44,6 @@ class GeoEntity:
                     self.largest_bounding = new_bounding
                 return True
         return False
-
     def __repr__(self):
         return str(self.name) + "\n" + str(self.variations) + "\n" + str(self.geolocation)
 
