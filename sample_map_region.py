@@ -49,7 +49,7 @@ def sample_map_region(region_name, scale_range = None, filename = "luna_omo_meta
                             total_features += 1
                             if entity.within_bounding(feature["geometry"]["coordinates"]):
                                 within_bounds += 1
-                        if within_bounds / total_features > 0.9:
+                        if within_bounds / total_features > 0.1:
                             map_ids.append(file)
                     except:
                         pass

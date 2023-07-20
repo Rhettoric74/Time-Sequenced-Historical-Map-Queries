@@ -3,6 +3,7 @@ import json
 import geo_entity
 from fuzzywuzzy import fuzz
 from extract_year import extract_years
+import sample_map_region
 def feature_query(dir_name, feature_name, ratio_threshold = 85):
     """
     Purpose: query a directory of geojson files for files containing a specific named feature
@@ -61,10 +62,12 @@ def dated_query(dir_name, feature_name):
 
 
 if __name__ == "__main__":
-    cities = ["tokyo"]
-    for city in cities:
-        results = dated_query("japan", city)
-        print(results)
-        matched_with_city = {city:results}
-        with open("analyzed_cities/" + city + "_dates.json", "w") as fp:
-            json.dump(matched_with_city, fp)
+    regions_and_cities = {"norway":["oslo"], "estonia":["tallinn"]}
+    for region, cities in regions_and_cities.items():
+        sample_map_region.create_region_maps_folder(region)
+        for city in cities:
+            results = dated_query(region, city)
+            print(results)
+            matched_with_city = {city:results}
+            """ with open("analyzed_cities/" + city + "_dates.json", "w") as fp:
+                json.dump(matched_with_city, fp) """

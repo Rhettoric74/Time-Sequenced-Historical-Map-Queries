@@ -48,5 +48,7 @@ class GeoEntity:
         return str(self.name) + "\n" + str(self.variations) + "\n" + str(self.geolocation)
 
 if __name__ == "__main__":
-    istanbul = GeoEntity("Istanbul")
-    print(istanbul)
+    russia = GeoEntity("russia")
+    japan = GeoEntity("japan")
+    print(coordinate_geometry.bounding_box_area(russia.largest_bounding))
+    print(coordinate_geometry.bounding_box_area(japan.largest_bounding))
