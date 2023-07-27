@@ -15,7 +15,7 @@ def extract_years(map_ids):
     Parameters: map_ids, a list of map ids to link
     Returns: a dictionary mapping map ids to years
     """
-    return {id:float(maps_to_years_dict[id]) for id in map_ids}
+    return {id:float(maps_to_years_dict[id]) for id in map_ids if len(maps_to_years_dict[id]) > 0}
 if __name__ == "__main__":
     cities = ["beijing", "berlin", "boston", "detroit", "Glasgow", "london", "madrid", "marseille", "minneapolis", "montreal"]
     for city in cities:

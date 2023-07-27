@@ -46,7 +46,7 @@ def find_most_variants_feature(place_name):
     fclasses = find_fclasses(place_name)
     if fclasses == []:
         return None
-    most_variants_found = 0
+    most_variants_found = -1
     most_variants_geojson = None
     for fclass in fclasses:
         feature_collection = place_request_index(place_name, fclass)

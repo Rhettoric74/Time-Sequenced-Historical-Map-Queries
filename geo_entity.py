@@ -1,5 +1,6 @@
 import coordinate_geometry
 import whg_requests
+import country_converter as coco
 
 
 class GeoEntity:
@@ -7,7 +8,7 @@ class GeoEntity:
         """
         Purpose: initialize a GeoEntity object
         Parameters: name, the name of the GeoEntity
-        Returns: None
+        Returns: A geoentity object containing information about it extracted from WHG
         """
         self.name = name
         resulting_geojson = whg_requests.find_most_variants_feature(name)
@@ -20,6 +21,9 @@ class GeoEntity:
             self.variations.append(name.upper())
         self.fclass = resulting_geojson["properties"]["fclasses"][0]
         self.largest_bounding = coordinate_geometry.extract_bounds(resulting_geojson["geometry"]["coordinates"], self.fclass)
+        # add the country the geoentity is in by converting the ccode from the geojson object
+        cc = coco.CountryConverter()
+        self.country = cc.convert(resulting_geojson["properties"]["ccodes"], "ISO2", "name_short")
     def within_bounding(self, points):
         """
         Purpose: determine if a set of points overlaps with the largest bounding box found in the entity
@@ -48,7 +52,8 @@ class GeoEntity:
         return str(self.name) + "\n" + str(self.variations) + "\n" + str(self.geolocation)
 
 if __name__ == "__main__":
-    russia = GeoEntity("russia")
-    japan = GeoEntity("japan")
-    print(coordinate_geometry.bounding_box_area(russia.largest_bounding))
-    print(coordinate_geometry.bounding_box_area(japan.largest_bounding))
+    tokyo = GeoEntity("tokyo")
+    oslo = GeoEntity("oslo")
+    print(tokyo.country)
+    print(oslo.country)
+    

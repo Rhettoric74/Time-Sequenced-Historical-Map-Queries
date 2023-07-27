@@ -7,7 +7,6 @@ from csv import DictReader
 import re
 import random
 import numpy as np
-from scipy.cluster.hierarchy import linkage
 from scipy.spatial.distance import pdist
 from sklearn.decomposition import TruncatedSVD
 from sklearn.cluster import KMeans
@@ -15,6 +14,9 @@ import extract_year
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+vectorizer = None
+kmeans = None
+svd = None
 def vectorize_metadata(filename = "luna_omo_metadata_56628_20220724.csv"):
     corpus = []
     with open(filename, errors="ignore") as f:
@@ -22,11 +24,11 @@ def vectorize_metadata(filename = "luna_omo_metadata_56628_20220724.csv"):
         for row in reader:
             file_metadata = " ".join([row["title"], row["description"], row["fieldValues"]])
             corpus.append(re.sub('\b[0-9][0-9.,-]*\b', 'NUMBER-SPECIAL-TOKEN', file_metadata))
+    global vectorizer 
     vectorizer = TfidfVectorizer(analyzer = "word", stop_words = "english", min_df=200)
     X = vectorizer.fit_transform(corpus)
     feature_names = vectorizer.get_feature_names_out()
     words_only = [name for name in feature_names if not name.isnumeric()]
-    print(len(feature_names), len(words_only))
     print(X.shape)
     return X
 def k_means(vectorized_documents, k, iterations, filename = "luna_omo_metadata_56628_20220724.csv"):
@@ -34,12 +36,9 @@ def k_means(vectorized_documents, k, iterations, filename = "luna_omo_metadata_5
     Purpose: use k nearest neighbors algorithm to cluster vectorized documents
     Parameters: vectorized documents, a 2-D numpy array obtained from running vectorize_metadata
     """
-    """ 
-    svd = TruncatedSVD(100)
-    reduced_vectors = svd.fit_transform(X)
-    print("dimensions reduced")
-    print(len(reduced_vectors[0])) """
-    kmeans = KMeans(n_clusters=k, random_state=0, n_init="auto").fit(X)
+    
+    global kmeans
+    kmeans = KMeans(n_clusters=k, random_state=0, n_init="auto").fit(vectorized_documents)
     clustered_ids = {}
     with open(filename, errors="ignore") as f:
         reader = DictReader(f)
@@ -52,19 +51,38 @@ def k_means(vectorized_documents, k, iterations, filename = "luna_omo_metadata_5
                 clustered_ids[label].append(row["filename"])
             i += 1
     return clustered_ids
+def find_most_relevant_cluster(search_terms):
+    """
+    Purpose: Given a search term, find the clusters most relevant to its.
+    Parameters: search_terms (string), text to compare to the clusters to find the most similar clusters.
+    Returns: most similar cluster id to the search vector."""
+    search_vector = vectorizer.transform([search_terms])
+    #reduced_search_vector = svd.transform(search_vector)
+    return kmeans.predict(search_vector)[0]
+
+class ClusterRetriever:
+    def __init__(self, num_clusters = 200):
+        self.vectorized_documents = vectorize_metadata()
+        self.clustered_ids = k_means(self.vectorized_documents, num_clusters, 10)
+        
+    def find_relevant_map_ids(self, search_terms):
+        cluster_found = find_most_relevant_cluster(search_terms)
+        print(cluster_found)
+        return self.clustered_ids[cluster_found]
+
+
 if __name__ == "__main__":
-    X = vectorize_metadata()
-    print("vectorized")
-    
-    num_clusters = 100
-    clustered_ids = k_means(X, num_clusters, 10)
-    cluster_names = list(clustered_ids.keys())
-    print(cluster_names)
-    num_samples = 10
-    for i in range(num_samples):
-        cluster = random.choice(cluster_names)
-        sample = random.sample(clustered_ids[cluster], 10)
+    retriever = ClusterRetriever()
+    cluster_sizes = [len(cluster) for cluster in retriever.clustered_ids.values()]
+    print(max(cluster_sizes), min(cluster_sizes), np.std(cluster_sizes))
+
+    searches = ["oslo christiania kristiania", "tokyo edo yedo"]
+    for i in range(2):
+        cluster = find_most_relevant_cluster(searches[i])
+        print(searches[i])
+        sample = random.sample(retriever.clustered_ids[cluster], 10)
         print(cluster, sample)
-        print(extract_year.extract_years(sample))
+        print(np.std(list(extract_year.extract_years(sample).values())))
+
 
     print("clustered")
