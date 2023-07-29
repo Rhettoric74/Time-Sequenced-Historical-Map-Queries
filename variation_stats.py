@@ -113,6 +113,6 @@ if __name__ == "__main__":
         plot_named_accounts("analyzed_cities/" + city + "_dates.json")
         print(accounts)
         print(len(accounts)) """
-    plot_named_accounts(list_accounts_in_order("analyzed_cities/yekaterinburg_dates.json", True, 70))
-    plot_named_accounts(list_accounts_in_order("analyzed_cities/yekaterinburg_dates.json"))
+    plot_named_accounts(list_accounts_in_order("analyzed_cities/oslo_dates.json", True, 70))
+    plot_named_accounts(list_accounts_in_order("analyzed_cities/oslo_dates.json"))
         

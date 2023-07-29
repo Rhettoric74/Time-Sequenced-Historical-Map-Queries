@@ -21,10 +21,14 @@ def most_variants(geojson_obj):
     """Purpose: from a geojson object, find the feature with the most name variants.
     Parameters: geojson_obj, a geojson object.
     Returns: the feature with the most name variants."""
-    higest_variants = geojson_obj["features"][0]
+    most_variants_found = -1
+    higest_variants = None
     for feature in geojson_obj["features"]:
-        if len(feature["properties"]["variants"]) > len(higest_variants["properties"]["variants"]):
-            higest_variants = feature
+        if len(feature["properties"]["variants"]) > most_variants_found:
+            # only include geojson objects that have usable geometries
+            if type(feature["geometry"]) == dict:
+                higest_variants = feature
+                most_variants_found = len(feature["properties"]["variants"])
     return higest_variants
 def find_fclasses(place_name):
     """Purpose: find the feature class of a place name based on what type it appears in WHGazetteer.
@@ -37,15 +41,18 @@ def find_fclasses(place_name):
         if place_request_index(place_name, possibility)["count"] > 0:
             fclasses.append(possibility)
     return fclasses
-def find_most_variants_feature(place_name):
+def find_most_variants_feature(place_name, fclasses = None):
     """
     Purpose: find the feature with a given name that has the most place name variants
     Parameters: place_name, (string) name of the place to query
+                fclass, list of fclasses (characters) to include. If not passed, will automatically 
+                get all fclasses for the place name
     Returns: geojson object representing entity with the most variants.
     """
-    fclasses = find_fclasses(place_name)
-    if fclasses == []:
-        return None
+    if fclasses == None:
+        fclasses = find_fclasses(place_name)
+        if fclasses == []:
+            return None
     most_variants_found = -1
     most_variants_geojson = None
     for fclass in fclasses:
@@ -76,7 +83,5 @@ def bbox_request(sw, ne, fclasses = ["P", "S", "T", "A", "H", "L"]):
 
 
 if __name__ == "__main__":
-    resulting_json = bbox_request([-179.99, -89.99], [180, 90])
-    with open("whg_global_spatial_query.geojson", "w", encoding="utf-8") as f:
-        json.dump(resulting_json, f, ensure_ascii=False, indent=2)
+    resulting_json = find_most_variants_feature("oslo")
     

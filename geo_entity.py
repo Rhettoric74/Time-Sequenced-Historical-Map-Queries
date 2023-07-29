@@ -4,23 +4,27 @@ import country_converter as coco
 
 
 class GeoEntity:
-    def __init__(self, name):
+    def __init__(self, name, fclasses = None):
         """
         Purpose: initialize a GeoEntity object
         Parameters: name, the name of the GeoEntity
         Returns: A geoentity object containing information about it extracted from WHG
         """
         self.name = name
-        resulting_geojson = whg_requests.find_most_variants_feature(name)
+        resulting_geojson = whg_requests.find_most_variants_feature(name, fclasses)
         if resulting_geojson == None:
             raise Exception("feature not in whg database")
-        self.geolocation = coordinate_geometry.get_centroid(resulting_geojson["geometry"]["coordinates"])
+        if "coordinates" in resulting_geojson["geometry"].keys():
+            coordinates = resulting_geojson["geometry"]["coordinates"]
+        else:
+            coordinates = resulting_geojson["geometry"]["geometries"][0]["coordinates"]
+        self.geolocation = coordinate_geometry.get_centroid(coordinates)
         self.variations = [variant.upper() for variant in resulting_geojson["properties"]["variants"]]
         self.place_id = resulting_geojson["properties"]["place_id"]
         if name.upper() not in self.variations:
             self.variations.append(name.upper())
         self.fclass = resulting_geojson["properties"]["fclasses"][0]
-        self.largest_bounding = coordinate_geometry.extract_bounds(resulting_geojson["geometry"]["coordinates"], self.fclass)
+        self.largest_bounding = coordinate_geometry.extract_bounds(coordinates, self.fclass)
         # add the country the geoentity is in by converting the ccode from the geojson object
         cc = coco.CountryConverter()
         self.country = cc.convert(resulting_geojson["properties"]["ccodes"], "ISO2", "name_short")
@@ -40,20 +44,18 @@ class GeoEntity:
             points = points[0]
         
         bounding = self.largest_bounding
-        new_bounding = coordinate_geometry.extract_bounds(points, self.fclass)
         for point in points:
             if point[0] >= bounding[0][0] and point[0] <= bounding[1][0] and point[1] >= bounding[0][1] and point[1] <= bounding[1][1]:
-                # check if the points should be the new bounding box
-                if coordinate_geometry.bounding_box_area(new_bounding) > coordinate_geometry.bounding_box_area(bounding):
-                    self.largest_bounding = new_bounding
                 return True
         return False
+    def update_bounds(self, points):
+        # check if the points should be the new bounding box
+        new_bounding = coordinate_geometry.extract_bounds(points, self.fclass)
+        if coordinate_geometry.bounding_box_area(new_bounding) > coordinate_geometry.bounding_box_area(new_bounding):
+            self.largest_bounding = new_bounding
+
     def __repr__(self):
         return str(self.name) + "\n" + str(self.variations) + "\n" + str(self.geolocation)
 
 if __name__ == "__main__":
-    tokyo = GeoEntity("tokyo")
-    oslo = GeoEntity("oslo")
-    print(tokyo.country)
-    print(oslo.country)
-    
+    print(GeoEntity("Honduras", ["A"]))

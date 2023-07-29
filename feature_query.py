@@ -5,7 +5,7 @@ from fuzzywuzzy import fuzz
 from extract_year import extract_years
 from coordinate_geometry import *
 import time
-def feature_query(feature_name, ratio_threshold = 85):
+def feature_query(feature_name, ratio_threshold = 90):
     """
     Purpose: query a directory of geojson files for files containing a specific named feature
     Parameters: dir_name, the name of the directory to query
@@ -42,18 +42,23 @@ def feature_query(feature_name, ratio_threshold = 85):
                 text = str(feature["properties"]["text"]).upper()
                 post_ocr = str(feature["properties"]["postocr_label"]).upper()
                 # use fuzzy string comparison to detect a match with known name variants
-                for variant in entity.variations:
-                    if fuzz.ratio(post_ocr, variant) > ratio_threshold or fuzz.ratio(text, variant) > ratio_threshold:
-                        # the text is considered to match the variant
-                        # if the feature is found, and close to the coordinates of the entity found by whg, add the file to the list
-                        if entity.within_bounding(feature["geometry"]["coordinates"]):
+                coords = feature["geometry"]["coordinates"]
+                # check if the point is within the entity being queried
+                if entity.within_bounding(coords):
+                    # check if features in the neighborhood match a known name
+                    for variant in entity.variations:
+                        if fuzz.ratio(post_ocr, variant) > ratio_threshold or fuzz.ratio(text, variant) > ratio_threshold:
+                            # the text is considered to match the variant
+                            # if the feature is found, and close to the coordinates of the entity found by whg, add the file to the list
                             print(post_ocr + ": " + variant)
                             print(entity.largest_bounding)
+                            entity.update_bounds(coords)
                             # add the file to the dictionary mapped with the variant found
                             if variant in files:
                                 files[variant].append(file.strip(".geojson"))
                             else:
                                 files[variant] = [file.strip(".geojson")]
+                            break
     # return the list of files
     return files
 def dated_query(feature_name):
@@ -71,14 +76,18 @@ def dated_query(feature_name):
 
 
 if __name__ == "__main__":
-    cities = ["Nashville", "Tokyo", "Stalingrad", "Leningrad"]
+    with open("analyzed_cities/capitals_list.txt") as f:
+        cities = f.readlines()
     search_times = []
     for city in cities:
         search_time_start = time.time()
-        results = dated_query(city)
+        try:
+            results = dated_query(city)
+        except:
+            continue
         search_times.append(time.time() - search_time_start)
         print(results)
         matched_with_city = {city:results}
-        with open("analyzed_cities/" + city + "_dates.json", "w") as fp:
+        with open("analyzed_cities/world_capitals" + city + "_dates.json", "w") as fp:
             json.dump(matched_with_city, fp)
     print(search_times)
