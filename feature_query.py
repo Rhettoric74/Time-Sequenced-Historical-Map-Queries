@@ -1,11 +1,11 @@
 import os
 import json
-import geo_entity
+from geo_entity import *
 from fuzzywuzzy import fuzz
 from extract_year import extract_years
 from coordinate_geometry import *
 import time
-def feature_query(feature_name, ratio_threshold = 90):
+def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
     """
     Purpose: query a directory of geojson files for files containing a specific named feature
     Parameters: dir_name, the name of the directory to query
@@ -15,7 +15,7 @@ def feature_query(feature_name, ratio_threshold = 90):
                 That is, if fuzz.ratio(text, variant) is greater than this threshold, we will consider them to match. 
     returns: a dictionary of each variant of the feature name matched with the map ids of maps that contain that variant.
     """
-    entity = geo_entity.GeoEntity(feature_name)
+    entity = GeoEntity(feature_name, fclasses)
     print(entity)
     with open("countries_to_map_ids.json") as fp:
         countries_to_map_ids = json.load(fp)
@@ -61,13 +61,13 @@ def feature_query(feature_name, ratio_threshold = 90):
                             break
     # return the list of files
     return files
-def dated_query(feature_name):
+def dated_query(feature_name, fclasses = None):
     """
     Purpose: wrapper around feature_query which matches the resulting maps with their years
     Parameters: See feature_query
     Returns: Dictionary of name variants, each mapped to another dictionary matching map_ids to their years"""
 
-    feature_results = feature_query(feature_name)
+    feature_results = feature_query(feature_name, fclasses)
     dated_results = {}
     for variant in feature_results.keys():
         dated_results[variant] = extract_years(feature_results[variant])
@@ -77,17 +77,20 @@ def dated_query(feature_name):
 
 if __name__ == "__main__":
     with open("analyzed_cities/capitals_list.txt") as f:
-        cities = f.readlines()
+        cities = f.readlines()[1:]
     search_times = []
+    print(type(cities[0]))
     for city in cities:
+        city = city.strip("\n")
         search_time_start = time.time()
         try:
-            results = dated_query(city)
+            results = dated_query(city, 90)
+        
+            search_times.append(time.time() - search_time_start)
+            print(results)
+            matched_with_city = {city:results}
+            with open("analyzed_cities/world_capitals" + city + "_dates.json", "w") as fp:
+                json.dump(matched_with_city, fp)
         except:
             continue
-        search_times.append(time.time() - search_time_start)
-        print(results)
-        matched_with_city = {city:results}
-        with open("analyzed_cities/world_capitals" + city + "_dates.json", "w") as fp:
-            json.dump(matched_with_city, fp)
     print(search_times)

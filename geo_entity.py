@@ -8,6 +8,7 @@ class GeoEntity:
         """
         Purpose: initialize a GeoEntity object
         Parameters: name, the name of the GeoEntity
+                    fclasses, the possible fclasses to search, all fclasses if None is passed
         Returns: A geoentity object containing information about it extracted from WHG
         """
         self.name = name
@@ -58,4 +59,4 @@ class GeoEntity:
         return str(self.name) + "\n" + str(self.variations) + "\n" + str(self.geolocation)
 
 if __name__ == "__main__":
-    print(GeoEntity("Honduras", ["A"]))
+    print(GeoEntity("sukhumi"))

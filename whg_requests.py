@@ -16,6 +16,9 @@ def place_request_index(place_name, fclass = "P"):
     response = requests.get(url)
     if response.status_code == 200:
         return json.loads(response.content)
+    else:
+        print("status code", response.status_code)
+        raise Exception("Api request failed")
 
 def most_variants(geojson_obj):
     """Purpose: from a geojson object, find the feature with the most name variants.
