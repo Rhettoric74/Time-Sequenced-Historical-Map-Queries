@@ -76,10 +76,9 @@ def dated_query(feature_name, fclasses = None):
 
 
 if __name__ == "__main__":
-    with open("analyzed_cities/capitals_list.txt") as f:
+    with open("analyzed_cities/russian_cities.txt") as f:
         cities = f.readlines()[1:]
     search_times = []
-    print(type(cities[0]))
     for city in cities:
         city = city.strip("\n")
         search_time_start = time.time()
@@ -89,7 +88,7 @@ if __name__ == "__main__":
             search_times.append(time.time() - search_time_start)
             print(results)
             matched_with_city = {city:results}
-            with open("analyzed_cities/world_capitals" + city + "_dates.json", "w") as fp:
+            with open("analyzed_cities/russian_cities/" + city + "_dates.json", "w") as fp:
                 json.dump(matched_with_city, fp)
         except:
             continue

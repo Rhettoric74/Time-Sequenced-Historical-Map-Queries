@@ -1,0 +1,50 @@
+City/Town
+2010 Census [2]
+Moscow
+Saint Petersburg
+Novosibirsk
+Yekaterinburg
+Kazan
+Nizhny Novgorod
+Chelyabinsk
+Krasnoyarsk
+Samara
+Ufa
+Rostov-on-Don
+Omsk
+Krasnodar
+Voronezh
+Perm
+Volgograd
+Saratov
+Tyumen
+Tolyatti
+Barnaul
+Izhevsk
+Makhachkala
+Khabarovsk
+Ulyanovsk
+Irkutsk
+Vladivostok
+Yaroslavl
+Kemerovo
+Tomsk
+Naberezhnye Chelny
+Sevastopol
+Stavropol
+Orenburg
+Novokuznetsk
+Ryazan
+Balashikha
+Penza
+Cheboksary
+Lipetsk
+Kaliningrad
+Astrakhan
+Tula
+Kirov
+Sochi
+Kursk
+Ulan-Ude
+Tver
+Magnitogorsk
