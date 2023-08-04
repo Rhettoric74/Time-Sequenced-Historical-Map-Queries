@@ -76,20 +76,21 @@ def dated_query(feature_name, fclasses = None):
 
 
 if __name__ == "__main__":
-    with open("analyzed_cities/russian_cities.txt") as f:
-        cities = f.readlines()[1:]
+    with open("countries_to_iso2_codes.csv") as f:
+        features = f.readlines()[1:]
+        features = [feature.split(",")[0] for feature in features]
     search_times = []
-    for city in cities:
-        city = city.strip("\n")
+    for feature in features:
+        feature = feature.strip("\n")
         search_time_start = time.time()
         try:
-            results = dated_query(city, 90)
+            results = dated_query(feature, 90)
         
             search_times.append(time.time() - search_time_start)
             print(results)
-            matched_with_city = {city:results}
-            with open("analyzed_cities/russian_cities/" + city + "_dates.json", "w") as fp:
-                json.dump(matched_with_city, fp)
+            matched_with_feature = {feature:results}
+            with open("analyzed_features/countries/" + feature + "_dates.json", "w") as fp:
+                json.dump(matched_with_feature, fp)
         except:
             continue
     print(search_times)
