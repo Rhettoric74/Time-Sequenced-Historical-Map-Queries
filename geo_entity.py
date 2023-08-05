@@ -20,7 +20,7 @@ class GeoEntity:
         else:
             coordinates = resulting_geojson["geometry"]["geometries"][0]["coordinates"]
         self.geolocation = coordinate_geometry.get_centroid(coordinates)
-        self.variations = [variant.upper() for variant in resulting_geojson["properties"]["variants"]]
+        self.variations = [variant.upper() for variant in resulting_geojson["properties"]["variants"] if variant.upper() != "THE"]
         self.place_id = resulting_geojson["properties"]["place_id"]
         if name.upper() not in self.variations:
             self.variations.append(name.upper())
@@ -59,4 +59,4 @@ class GeoEntity:
         return str(self.name) + "\n" + str(self.variations) + "\n" + str(self.geolocation)
 
 if __name__ == "__main__":
-    print(GeoEntity("sukhumi"))
+    print(GeoEntity("Grenada"))

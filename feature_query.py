@@ -4,6 +4,7 @@ from geo_entity import *
 from fuzzywuzzy import fuzz
 from extract_year import extract_years
 from coordinate_geometry import *
+from match_countries_to_map_ids import countries_to_ids_dict
 import time
 def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
     """
@@ -17,13 +18,11 @@ def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
     """
     entity = GeoEntity(feature_name, fclasses)
     print(entity)
-    with open("countries_to_map_ids.json") as fp:
-        countries_to_map_ids = json.load(fp)
     # initialize list of files containing the feature
     files = {}
     # iterate over all files in the directory
     files_iterated = 0
-    for file in countries_to_map_ids[entity.country]:
+    for file in countries_to_ids_dict[entity.country]:
         if files_iterated % 100 == 0:
             print(files_iterated, "geojson files searched")
         files_iterated += 1

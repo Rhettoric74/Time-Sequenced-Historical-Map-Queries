@@ -1,6 +1,7 @@
 import numpy as np
 import json
 import os
+import math
 def get_centroid(points):
     """
     Purpose: get the centroid of a list of point coordinates
@@ -77,8 +78,18 @@ def estimate_map_bounds(feature_collection):
     southwest_lat = float("inf")
     northeast_long = -float("inf")
     northeast_lat = -float("inf")
+
     for feature in feature_collection["features"]:
-        for coord in np.reshape(feature["geometry"]["coordinates"], (-1, 2)):
+        coords = feature["geometry"]["coordinates"]
+        # format the coordinates as a list of 2-d coordinate lists
+        if not isinstance(coords[0], list):
+            coords = [coords]
+        while isinstance(coords[0][0], list):
+            coords = coords[0]
+        for coord in coords:
+            # ensure coordinates are between [-90, -180] and [90, 180], 
+            # wrapping around if necessary
+            coord = normalize_coordinate(coord)
             if coord[0] < southwest_long:
                 southwest_long = coord[0]
             elif coord[0] > northeast_long:
@@ -89,6 +100,19 @@ def estimate_map_bounds(feature_collection):
                 northeast_lat = coord[1]
     return [[southwest_long, southwest_lat], [northeast_long, northeast_lat]]
 
+def normalize_coordinate(point):
+    """
+    Purpose: given a wgs84 coordinate, return the equivalent coordinate with values restricted between
+    [(-90-90), (-180-180)].
+    Parameters: point, (list) in the format [latitude, longitude]
+    returns: an equivalent point with its values in the standard range"""
+    normalized_latitude = positive_mod(point[1] + 90, 180) - 90
+    normalized_longitude = positive_mod(point[0] + 180, 360) - 180
+    return [normalized_longitude, normalized_latitude]
+
+def positive_mod(x, y):
+    return math.fmod((math.fmod(x, y) + y), y)
+
 def overlaps_with_map_bbox(map_bounds, points):
     # check if a set of points overlaps with the bounding box of the map
     for point in points:
@@ -98,9 +122,10 @@ def overlaps_with_map_bbox(map_bounds, points):
     return False
 
 if __name__ == "__main__":
-    with open("random_hundred_geojson_testr_syn/12525022.geojson") as json_file:
+    with open("geojson_testr_syn/12525022.geojson") as json_file:
         bounds = estimate_map_bounds(json.load(json_file))
-        file_text = '{"type": "FeatureCollection", "name": "12525022", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [' + str(bounds) + ']}]}'
+        print(bounds)
+        file_text = {"type": "FeatureCollection", "name": "2503036", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [bounds]}}]}
     with open("12525022_bounds.geojson", "w") as fw:    
         json.dump(file_text, fw)
 
