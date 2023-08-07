@@ -5,6 +5,7 @@ from fuzzywuzzy import fuzz
 from extract_year import extract_years
 from coordinate_geometry import *
 from match_countries_to_map_ids import countries_to_ids_dict
+import random
 import time
 def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
     """
@@ -22,7 +23,19 @@ def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
     files = {}
     # iterate over all files in the directory
     files_iterated = 0
-    for file in countries_to_ids_dict[entity.country]:
+    # extract relevant maps based on the entries in the countries_to_ids_dict
+    # for the country(ies) the feature is in
+    relevant_maps = set()
+    if isinstance(entity.country, list):
+        print(entity.country)
+        for country in entity.country:
+            relevant_maps = relevant_maps.union(countries_to_ids_dict[country])
+    else:
+        relevant_maps = set(countries_to_ids_dict[entity.country])
+    # cap the relevant maps to search at 10000 if there are more
+    if len(list(relevant_maps)) > 10000:
+        relevant_maps = random.sample(list(relevant_maps), 10000)
+    for file in list(relevant_maps):
         if files_iterated % 100 == 0:
             print(files_iterated, "geojson files searched")
         files_iterated += 1
@@ -83,6 +96,8 @@ if __name__ == "__main__":
         feature = feature.strip("\n")
         search_time_start = time.time()
         try:
+            
+            print(feature)
             results = dated_query(feature, 90)
         
             search_times.append(time.time() - search_time_start)
@@ -90,6 +105,7 @@ if __name__ == "__main__":
             matched_with_feature = {feature:results}
             with open("analyzed_features/countries/" + feature + "_dates.json", "w") as fp:
                 json.dump(matched_with_feature, fp)
-        except:
+        except Exception as e:
+            print(e)
             continue
     print(search_times)
