@@ -1,10 +1,10 @@
 import requests
 import csv
-from PIL import Image
-import glymur
+from variation_stats import list_accounts_in_order
 import json
 from fuzzywuzzy import fuzz
 import io
+import os
 import cv2
 
 def find_image_url_in_fields(field_values):
@@ -24,34 +24,28 @@ def map_ids_to_image_urls(filename = "luna_omo_metadata_56628_20220724.csv"):
         return ids_to_urls
 def get_image(map_id, ids_to_urls):
     url = ids_to_urls[map_id]
-    print(url)
     response = requests.get(url, verify=False)
     if response.status_code == 200:
         return response.content
     else:
         print(f"Failed to download the image. Status code: {response.status_code}")
-def display_image(image_content, cropping = None):
+def load_image(map_id, image_content, cropping = None):
     image_data = io.BytesIO(image_content)
+    if not os.path.isdir("map_images"):
+        os.mkdir("map_images")
 
     # Save the raw image bytes to a temporary file
-    with open('temp.jp2', 'wb') as temp_file:
+    with open("map_images/" + map_id + '.jp2', 'wb') as temp_file:
         temp_file.write(image_data.getbuffer())
 
     # Decode the JP2 image using opencv
-    image = cv2.imread('temp.jp2')
-    print(image.shape)
-
+    image = cv2.imread("map_images/" +map_id + '.jp2')
     # Check if the image was read successfully
     if image is not None:
         # Display the image using OpenCV
         if cropping != None:
-            print(cropping)
             image = image[cropping[1]:cropping[3], cropping[0]:cropping[2]]
-        cv2.imshow('JP2 Image', image)
-
-        # Wait until a key is pressed and then close the window
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    return image
 
 def get_cropping_bbox(img_coords):
     """
@@ -78,9 +72,7 @@ def find_image_cropping(map_id, feature_name, ratio_threshold = 90):
         map_data = json.load(json_file)
         for feature in map_data["features"]:
             if fuzz.ratio(feature_name.upper(), feature["properties"]["text"].upper()) > ratio_threshold:
-                print(feature["properties"]["text"])
                 image_coordinates = feature["properties"]["img_coordinates"]
-                print(image_coordinates)
                 return get_cropping_bbox(image_coordinates)
 def estimate_image_size(map_id):
     with open("geojson_testr_syn/" + map_id + ".geojson") as json_file:
@@ -100,11 +92,25 @@ def estimate_image_size(map_id):
                 if point[1] < topmost:
                     topmost = point[1]
         return (leftmost, topmost, rightmost, bottommost)
-            
-
+    
+def extract_images_from_accounts_file(filename):
+    """
+    Purpose: get an array of cropped images for each map in a named account file
+    Parameters: filename (string), a path to the file containing the named accounts you want to extract cropped images of
+    returns: a tuple containing the image array followed by the corresponding list of named accounts"""
+    ids_to_urls = map_ids_to_image_urls()
+    images = []
+    accounts_list = list_accounts_in_order(filename)
+    for account in accounts_list:
+        image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account.variant_name))
+        images.append(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    return images, accounts_list
+        
 
 if __name__ == "__main__":
     ids_to_urls = map_ids_to_image_urls()
-    map_id = "9110002"
+    map_id = "8021006"
     print(estimate_image_size(map_id))
-    display_image(get_image(map_id, ids_to_urls), find_image_cropping(map_id, "OSLO"))
+    cv2.imshow("Caricyn", extract_images_from_accounts_file("analyzed_features/russian_cities/Moscow_dates.json")[0][0])
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

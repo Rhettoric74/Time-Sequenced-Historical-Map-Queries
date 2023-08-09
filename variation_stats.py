@@ -114,6 +114,7 @@ if __name__ == "__main__":
         print(accounts)
         print(len(accounts)) """
     
-    accounts_list = list_accounts_in_order("analyzed_features/countries/Myanmar_dates.json", True, 50)
+    accounts_list = list_accounts_in_order("analyzed_features/russian_cities/Volgograd_dates.json", True, 70)
+    print(len(accounts_list))
     plot_named_accounts(accounts_list)
         

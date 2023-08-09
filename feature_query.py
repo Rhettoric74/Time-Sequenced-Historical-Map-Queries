@@ -89,7 +89,7 @@ def dated_query(feature_name, fclasses = None):
 
 if __name__ == "__main__":
     with open("countries_to_iso2_codes.csv") as f:
-        features = f.readlines()[1:]
+        features = f.readlines()[66:]
         features = [feature.split(",")[0] for feature in features]
     search_times = []
     for feature in features:

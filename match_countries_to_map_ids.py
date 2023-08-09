@@ -58,7 +58,7 @@ if __name__ == "__main__":
     input_file = "luna_omo_metadata_56628_20220724.csv"
 
     # Output CSV file path and name
-    output_file = "countries_added_luno_omo_metadata.csv"
+    output_file = "countries_added_luna_omo_metadata.csv"
 
     # match maps with the countries they contain
     map_ids_to_countries = {}

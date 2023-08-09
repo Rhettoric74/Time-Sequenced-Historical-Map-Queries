@@ -31,7 +31,7 @@ def check_field_sparseness(field, file = "luna_omo_metadata_56628_20220724.csv")
                 nonempty_rows += 1
         return nonempty_rows / rows
 if __name__ == "__main__":
-    file = "countries_added_luno_omo_metadata.csv"
+    file = "countries_added_luna_omo_metadata.csv"
     with open(file, errors="ignore") as f:
         reader = csv.DictReader(f)
         field_percentages = {}
