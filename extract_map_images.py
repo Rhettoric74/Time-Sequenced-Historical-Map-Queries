@@ -6,6 +6,7 @@ from fuzzywuzzy import fuzz
 import io
 import os
 import cv2
+import config
 
 def find_image_url_in_fields(field_values):
     link_indicator = "'Download 1': ['<a href="
@@ -15,7 +16,7 @@ def find_image_url_in_fields(field_values):
         cur_index += 1
     return field_values[start_index: cur_index]
 
-def map_ids_to_image_urls(filename = "luna_omo_metadata_56628_20220724.csv"):
+def map_ids_to_image_urls(filename = config.METADATA_CSV):
     with open(filename, "r", errors="ignore") as f:
         reader = csv.DictReader(f)
         ids_to_urls = {}
@@ -68,14 +69,14 @@ def get_cropping_bbox(img_coords):
             rightmost_coord = point[0]
     return (max(0,leftmost_coord - 300), max(0, topmost_coord - 300), rightmost_coord + 300, bottommost_coord + 300)
 def find_image_cropping(map_id, feature_name, ratio_threshold = 90):
-    with open("geojson_testr_syn/" + map_id + ".geojson") as json_file:
+    with open(config.GEOJSON_FOLDER +  map_id + ".geojson") as json_file:
         map_data = json.load(json_file)
         for feature in map_data["features"]:
             if fuzz.ratio(feature_name.upper(), feature["properties"]["text"].upper()) > ratio_threshold:
                 image_coordinates = feature["properties"]["img_coordinates"]
                 return get_cropping_bbox(image_coordinates)
 def estimate_image_size(map_id):
-    with open("geojson_testr_syn/" + map_id + ".geojson") as json_file:
+    with open(config.GEOJSON_FOLDER + map_id + ".geojson") as json_file:
         map_data = json.load(json_file)
         rightmost = 0
         bottommost = 0

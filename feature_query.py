@@ -7,6 +7,7 @@ from coordinate_geometry import *
 from match_countries_to_map_ids import countries_to_ids_dict
 import random
 import time
+import config
 def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
     """
     Purpose: query a directory of geojson files for files containing a specific named feature
@@ -41,7 +42,7 @@ def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
         files_iterated += 1
         # open the file
         try:
-            with open(os.getcwd() + "\\" + "geojson_testr_syn" + "\\" + file + ".geojson") as json_file:
+            with open(config.GEOJSON_FOLDER + file + ".geojson") as json_file:
                 # read the file's contents
                 data = json.load(json_file)
         except FileNotFoundError:
@@ -89,23 +90,20 @@ def dated_query(feature_name, fclasses = None):
 
 if __name__ == "__main__":
     with open("countries_to_iso2_codes.csv") as f:
-        features = f.readlines()[66:]
+        features = f.readlines()[1:]
         features = [feature.split(",")[0] for feature in features]
     search_times = []
     for feature in features:
         feature = feature.strip("\n")
         search_time_start = time.time()
-        try:
-            
-            print(feature)
-            results = dated_query(feature, 90)
         
-            search_times.append(time.time() - search_time_start)
-            print(results)
-            matched_with_feature = {feature:results}
-            with open("analyzed_features/countries/" + feature + "_dates.json", "w") as fp:
-                json.dump(matched_with_feature, fp)
-        except Exception as e:
-            print(e)
-            continue
+            
+        print(feature)
+        results = dated_query(feature, 90)
+    
+        search_times.append(time.time() - search_time_start)
+        print(results)
+        matched_with_feature = {feature:results}
+        with open("analyzed_features/famous_name_changes/" + feature + "_dates.json", "w") as fp:
+            json.dump(matched_with_feature, fp)
     print(search_times)

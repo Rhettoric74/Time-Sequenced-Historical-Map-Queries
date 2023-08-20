@@ -121,12 +121,6 @@ def overlaps_with_map_bbox(map_bounds, points):
             return True
     return False
 
-if __name__ == "__main__":
-    with open("geojson_testr_syn/12525022.geojson") as json_file:
-        bounds = estimate_map_bounds(json.load(json_file))
-        print(bounds)
-        file_text = {"type": "FeatureCollection", "name": "2503036", "features": [{"type": "Feature", "geometry": {"type": "Polygon", "coordinates": [bounds]}}]}
-    with open("12525022_bounds.geojson", "w") as fw:    
-        json.dump(file_text, fw)
+
 
                                      

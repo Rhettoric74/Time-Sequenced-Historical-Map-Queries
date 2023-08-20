@@ -1,3 +1,6 @@
 *.geojson
 __pycache__
 *.csv
+/future_work
+/map_images
+config.py
