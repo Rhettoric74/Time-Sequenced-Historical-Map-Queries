@@ -1,12 +1,13 @@
 import requests
 import csv
-from variation_stats import list_accounts_in_order
+from scripts.variation_stats import list_accounts_in_order
 import json
 from fuzzywuzzy import fuzz
 import io
 import os
 import cv2
 import config
+import random
 
 def find_image_url_in_fields(field_values):
     link_indicator = "'Download 1': ['<a href="
@@ -94,7 +95,7 @@ def estimate_image_size(map_id):
                     topmost = point[1]
         return (leftmost, topmost, rightmost, bottommost)
     
-def extract_images_from_accounts_file(filename):
+def extract_images_from_accounts_file(filename, max_sample = None):
     """
     Purpose: get an array of cropped images for each map in a named account file
     Parameters: filename (string), a path to the file containing the named accounts you want to extract cropped images of
@@ -102,6 +103,9 @@ def extract_images_from_accounts_file(filename):
     ids_to_urls = map_ids_to_image_urls()
     images = []
     accounts_list = list_accounts_in_order(filename)
+    if max_sample != None and max_sample > len(accounts_list):
+        accounts_list = random.sample(accounts_list, max_sample)
+        accounts_list.sort()
     for account in accounts_list:
         image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account.variant_name))
         images.append(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))

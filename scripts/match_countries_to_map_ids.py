@@ -1,5 +1,5 @@
-from coordinate_geometry import *
-from geo_entity import GeoEntity
+from scripts.coordinate_geometry import *
+from scripts.geo_entity import GeoEntity
 import json
 import os
 import config

@@ -2,7 +2,6 @@ import extract_map_images
 from matplotlib import pyplot as plt
 import mplcursors
 import math
-import numpy as np
 
 def divide_by_decade(named_accounts):
     """Purpose: divide a list of named accounts by decade, so that  maps in the same decade can be plotted in the same column

@@ -1,6 +1,5 @@
 import requests
 import json
-import sys
 
 def place_request_index(place_name, fclass = "P"):
     """

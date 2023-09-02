@@ -1,4 +1,4 @@
-from variation_stats import *
+from scripts.variation_stats import *
 import os
 
 class NameSplit:
