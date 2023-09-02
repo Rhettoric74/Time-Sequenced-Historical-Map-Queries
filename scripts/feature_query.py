@@ -8,7 +8,7 @@ from match_countries_to_map_ids import countries_to_ids_dict
 import random
 import time
 import config
-def feature_query(feature_name, ratio_threshold = 90, fclasses = None):
+def feature_query(feature_name, fclasses = None, ratio_threshold = 90):
     """
     Purpose: query a directory of geojson files for files containing a specific named feature
     Parameters: dir_name, the name of the directory to query
