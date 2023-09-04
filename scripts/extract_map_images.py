@@ -25,6 +25,7 @@ def map_ids_to_image_urls(filename = config.METADATA_CSV):
             ids_to_urls[row["filename"]] = find_image_url_in_fields(row["fieldValues"])
         return ids_to_urls
 def get_image(map_id, ids_to_urls):
+    requests.urllib3.disable_warnings()
     url = ids_to_urls[map_id]
     response = requests.get(url, verify=False)
     if response.status_code == 200:
