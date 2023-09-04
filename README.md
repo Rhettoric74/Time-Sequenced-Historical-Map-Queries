@@ -8,6 +8,8 @@ other name variants used for the same place (e.g. "Istambul", "Constantinople", 
 those names at those coordinates by searching text labels from maps processed by the **mapKurator** system [https://github.com/machines-reading-maps/map-kurator], which recognizes text labels on scanned maps
 and georeferences the bounding boxes of the text labels.
 
+![Example output for query for "Volgograd"](https://github.com/Rhettoric74/Historical-Maps-Temporal-Analysis/raw/master/assets/StalingradPlottedAndEnlarged.png)
+
 ## 0: Prerequisites
 - In order to use this system, you must first have a folder of processed map data from the **mapKurator** system on your computer. The **mapKurator** output from the David Rumsey map collection
 can be downloaded at [https://s3.msi.umn.edu/rumsey_output/geojson_testr_syn_54119.zip].
