@@ -7,13 +7,15 @@ Given a query for the name of a geographic place (e.g. "Istanbul"), this system 
 other name variants used for the same place (e.g. "Istambul", "Constantinople", "Byzantium"), and the geographic coordinates of that place. It then retrieves maps that contain accounts of 
 those names at those coordinates by searching text labels from maps processed by the **mapKurator** system [https://github.com/machines-reading-maps/map-kurator], which recognizes text labels on scanned maps
 and georeferences the bounding boxes of the text labels.
-
+# Example output for a query for "Volgograd":
 ![Example output for a query for "Volgograd"](https://github.com/Rhettoric74/Historical-Maps-Temporal-Analysis/raw/master/assets/StalingradPlottedAndEnlarged.png)
-#-Example output for a query for "Volgograd"
+
+
+
 ## 0: Prerequisites
 - In order to use this system, you must first have a folder of processed map data from the **mapKurator** system on your computer. The **mapKurator** output from the David Rumsey map collection
 can be downloaded at [https://s3.msi.umn.edu/rumsey_output/geojson_testr_syn_54119.zip].
-- You must also have downloaded the CSV metadata file for maps from the David Rumsey Collection [NEED TO FIND LINK TO THIS]. This data is used to get the dates and download URLs of the retrieved maps.
+- You must also have downloaded the **luna_omo_metadata_56628_20220724.csv** metadata file for maps from the David Rumsey Collection [https://searchworks.stanford.edu/view/ss311gz1992]. This data is used to get the dates and download URLs of the retrieved maps.
 ## 1: Creating A Config File
 Create a copy of the file `config.py.example` and configure the paths to your data (CSV metadata and
 folder of **mapKurator** output files) according to where they are located on your machine. Name this copy 'config.py'.
