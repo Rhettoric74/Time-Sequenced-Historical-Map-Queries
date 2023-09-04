@@ -57,6 +57,3 @@ class GeoEntity:
 
     def __repr__(self):
         return str(self.name) + "\n" + str(self.variations) + "\n" + str(self.geolocation)
-
-if __name__ == "__main__":
-    print(GeoEntity("Grenada"))

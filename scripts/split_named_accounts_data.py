@@ -69,11 +69,3 @@ def check_accounts_impurity(accounts_list, variant_name):
         if account.variant_name != variant_name:
             non_matches += 1
     return non_matches / len(accounts_list)
-if __name__ == "__main__":
-    dirname = "russian_cities"
-    for accounts_filename in os.listdir("analyzed_features/" + dirname):
-        accounts_list = list_accounts_in_order("analyzed_features/" + dirname + "/" + accounts_filename, True, 60)
-        if len(accounts_list) > 5 and check_accounts_purity(accounts_list)[1] < 0.9:
-            plot_named_accounts(accounts_list)
-            print(accounts_filename)
-            print(get_split_threshold(accounts_list))

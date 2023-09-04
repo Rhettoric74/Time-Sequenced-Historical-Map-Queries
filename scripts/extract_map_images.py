@@ -112,11 +112,3 @@ def extract_images_from_accounts_file(filename, max_sample = None):
         images.append(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     return images, accounts_list
         
-
-if __name__ == "__main__":
-    ids_to_urls = map_ids_to_image_urls()
-    map_id = "8021006"
-    print(estimate_image_size(map_id))
-    cv2.imshow("Caricyn", extract_images_from_accounts_file("analyzed_features/russian_cities/Moscow_dates.json")[0][0])
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
