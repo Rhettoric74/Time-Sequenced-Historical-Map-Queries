@@ -1,6 +1,7 @@
 # Historical-Maps-Temporal-Analysis
 A visualization tool that retrieves time-sequenced maps of a given place. These maps display the different names used by the place across history, 
-and how geographic names change over time. Map images provided by the David Rumsey Historical Map Collection, Stanford Libraries [https://www.davidrumsey.com]
+and how geographic names change over time. Map images provided by the David Rumsey Historical Map Collection, Stanford Libraries
+[https://www.davidrumsey.com]
 # Overview:
 Given a query for the name of a geographic place (e.g. "Istanbul"), this system uses the World Historical Gazetteer [https://whgazetteer.org/] to match that name with
 other name variants used for the same place (e.g. "Istambul", "Constantinople", "Byzantium"), and the geographic coordinates of that place. It then retrieves maps that contain accounts of 
