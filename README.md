@@ -1,4 +1,4 @@
-# 
+# Time-Sequenced Map Queries 
 A visualization tool that retrieves time-sequenced maps of a given place. These maps display the different names used by the place across history, 
 and how geographic names change over time. Map images provided by the David Rumsey Historical Map Collection, Stanford Libraries
 [https://www.davidrumsey.com]
