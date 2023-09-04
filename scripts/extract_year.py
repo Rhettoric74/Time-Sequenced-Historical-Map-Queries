@@ -17,14 +17,5 @@ def extract_years(map_ids):
     Returns: a dictionary mapping map ids to years
     """
     return {id:float(maps_to_years_dict[id]) for id in map_ids if len(maps_to_years_dict[id]) > 0}
-if __name__ == "__main__":
-    cities = ["beijing", "berlin", "boston", "detroit", "Glasgow", "london", "madrid", "marseille", "minneapolis", "montreal"]
-    for city in cities:
-        print(city)
-        maps_list = [filename.strip(".geojson") for filename in os.listdir(city)]
-        years_list = list(extract_years(maps_list).values())
-        years_list.sort()
-        print(years_list)
-        print("mean year", np.mean(years_list))
-        print("standard deviation:", np.std(years_list))
+
     

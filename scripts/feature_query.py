@@ -88,22 +88,3 @@ def dated_query(feature_name, fclasses = None):
     
 
 
-if __name__ == "__main__":
-    with open("countries_to_iso2_codes.csv") as f:
-        features = f.readlines()[1:]
-        features = [feature.split(",")[0] for feature in features]
-    search_times = []
-    for feature in features:
-        feature = feature.strip("\n")
-        search_time_start = time.time()
-        
-            
-        print(feature)
-        results = dated_query(feature, 90)
-    
-        search_times.append(time.time() - search_time_start)
-        print(results)
-        matched_with_feature = {feature:results}
-        with open("analyzed_features/famous_name_changes/" + feature + "_dates.json", "w") as fp:
-            json.dump(matched_with_feature, fp)
-    print(search_times)

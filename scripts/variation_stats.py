@@ -105,16 +105,4 @@ def plot_named_accounts(accounts):
 
 
 
-if __name__ == "__main__":
-    #cities = ["tokyo", "mumbai", "oslo", "kinshasa", "tallinn", "dushanbe", "ottawa", "istanbul", "volgograd", "leningrad", "nashville", "saigon", "yekaterinburg"]
-    """ cities = ["ottawa"]
-    for city in cities:
-        accounts = list_accounts_in_order("analyzed_cities/" + city + "_dates.json")
-        plot_named_accounts("analyzed_cities/" + city + "_dates.json")
-        print(accounts)
-        print(len(accounts)) """
-    
-    accounts_list = list_accounts_in_order("analyzed_features/russian_cities/Volgograd_dates.json", True, 70)
-    print(len(accounts_list))
-    plot_named_accounts(accounts_list)
         

@@ -84,6 +84,4 @@ def bbox_request(sw, ne, fclasses = ["P", "S", "T", "A", "H", "L"]):
         return json.loads(response.content)
 
 
-if __name__ == "__main__":
-    resulting_json = find_most_variants_feature("oslo")
     

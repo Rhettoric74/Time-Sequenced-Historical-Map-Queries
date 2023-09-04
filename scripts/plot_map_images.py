@@ -66,8 +66,5 @@ def plot_image_accounts_list(images, named_accounts):
         # Connect the click event to the function
     cursors.connect("add", on_click)
     plt.show()
-if __name__ == "__main__":
-    images, named_accounts = extract_map_images.extract_images_from_accounts_file("analyzed_features/russian_cities/Moscow_dates.json")
-    plot_image_accounts_list(images, named_accounts)
     
     
