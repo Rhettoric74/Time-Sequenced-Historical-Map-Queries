@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.dirname("config.py"))
 import extract_map_images
 from matplotlib import pyplot as plt
 import mplcursors
@@ -66,5 +69,29 @@ def plot_image_accounts_list(images, named_accounts):
         # Connect the click event to the function
     cursors.connect("add", on_click)
     plt.show()
+if __name__ == "__main__":
+    """
+    To visualize query outputs, run this file while passing in the name of the query a command line argument.
+    Examples:  
+        python3 plot_map_images.py "Oslo"
+        python3 plot_map_images.py "world_capitals" "Oslo"
+    """
+    file_path = ""
+    if len(sys.argv) < 2:
+        print("Usage: Please specify the name of the place query that you want to plot")
+    if len(sys.argv) == 2:
+        file_path = "input_queries/" + sys.argv[1] + "_dates.json"
+    if len(sys.argv) == 3:
+        file_path = sys.argv[1] + "/" + sys.argv[2] + "_dates.json"
+    
+    # If you only want to see a limited number of maps, specify here the maximum number of maps to display
+    # and a random sample of that number of maps will be plotted
+    # Leave this as none to see all resulting maps
+    max_sample = None
+
+    # to instead see a plotted output for a previous query for "Oslo", uncomment the next line
+    # query_results_path = "world_capitals/" + "Oslo" + "_dates.json"
+    images, named_accounts = extract_map_images.extract_images_from_accounts_file("analyzed_features/" + file_path)
+    plot_image_accounts_list(images, named_accounts)
     
     
