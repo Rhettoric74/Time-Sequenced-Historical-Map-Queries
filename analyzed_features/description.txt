@@ -1,0 +1,7 @@
+This folder contains query results from various geographic places, including the countries 50 most populous cities in Russia. 
+These results contain the map id numbers, years, and variant names used for each map that was found that displayed the queried place.
+They do not contain the map images, but the maps from each file can be plotted by running:
+  import plot_map_images
+  import extract_map_images
+  images, named_accounts = extract_map_images.extract_images_from_accounts_file(<path/to/file>)
+  plot_map_images.plot_image_accounts_list(images, named_accounts)
