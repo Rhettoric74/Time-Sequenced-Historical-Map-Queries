@@ -26,14 +26,14 @@ def distance(point1, point2):
     """
     return np.linalg.norm(np.array(point1) - np.array(point2))
 
-def extract_bounds(points, fclass):
+def extract_bounds(points, fclass = "N"):
     """
     Purpose: Given a set of geocoordinates, give the minimum & maximum for lattitude and longitude
     of the coordinates
     Parameters: points, a list of coordinates, where each coordinate is an array-like of the format
     [longitude, lattitude],
-    fclass, the fclass of the entity, which will determine the default bounds for it location 
-    if only one point is provided
+    fclass, the fclass of the entity, which will pad the initial bounds of the entity's coordinates. If "N" (default)
+    is passed, no padding will be added to the coordinates
     returns: A list of the form [[min_longitude, min_lattitude], [max_longitude, max_lattitude]]
     """
     # format points to be a singly-nested list of coorinates
@@ -44,7 +44,7 @@ def extract_bounds(points, fclass):
     while isinstance(points[0][0], list):
         # remove unnecessary nesting of lists
         points = points[0]
-    fclass_margins = {"P":1, "S": 1, "T": 2, "A":1, "H":20, "L": 1}
+    fclass_margins = {"P":1, "S": 1, "T": 2, "A":1, "H":20, "L": 1, "N":0}
     distance = fclass_margins[fclass] / 2
     centroid = get_centroid(points)
     min_long = centroid[0] - distance

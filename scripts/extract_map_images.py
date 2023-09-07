@@ -1,6 +1,6 @@
 import requests
 import csv
-from scripts.variation_stats import list_accounts_in_order
+from variation_stats import list_accounts_in_order
 import json
 from fuzzywuzzy import fuzz
 import io

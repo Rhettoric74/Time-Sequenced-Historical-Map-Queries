@@ -48,6 +48,10 @@ class GeoEntity:
         for point in points:
             if point[0] >= bounding[0][0] and point[0] <= bounding[1][0] and point[1] >= bounding[0][1] and point[1] <= bounding[1][1]:
                 return True
+        points_bbox = coordinate_geometry.extract_bounds(points)
+        for bounding_point in bounding:
+            if bounding_point[0] >= points_bbox[0][0] and bounding_point[0] <= points_bbox[1][0] and bounding_point[1] >= points_bbox[0][1] and bounding_point[1] <= points_bbox[1][1]:
+                return True
         return False
     def update_bounds(self, points):
         # check if the points should be the new bounding box
