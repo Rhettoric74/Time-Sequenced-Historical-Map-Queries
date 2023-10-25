@@ -73,8 +73,8 @@ if __name__ == "__main__":
     """
     To visualize query outputs, run this file while passing in the name of the query a command line argument.
     Examples:  
-        python3 plot_map_images.py "Oslo"
-        python3 plot_map_images.py "world_capitals" "Oslo"
+        python3 scripts/plot_map_images.py "Oslo"
+        python3 scripts/plot_map_images.py "world_capitals" "Oslo"
     """
     file_path = ""
     if len(sys.argv) < 2:
