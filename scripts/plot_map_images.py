@@ -73,8 +73,8 @@ if __name__ == "__main__":
     """
     To visualize query outputs, run this file while passing in the name of the query a command line argument.
     Examples:  
-        python3 plot_map_images.py "Oslo"
-        python3 plot_map_images.py "world_capitals" "Oslo"
+        python3 scripts/plot_map_images.py "Oslo"
+        python3 scripts/plot_map_images.py "world_capitals" "Oslo"
     """
     file_path = ""
     if len(sys.argv) < 2:
@@ -87,11 +87,11 @@ if __name__ == "__main__":
     # If you only want to see a limited number of maps, specify here the maximum number of maps to display
     # and a random sample of that number of maps will be plotted
     # Leave this as none to see all resulting maps
-    max_sample = None
+    max_sample = 20
 
     # to instead see a plotted output for a previous query for "Oslo", uncomment the next line
     # query_results_path = "world_capitals/" + "Oslo" + "_dates.json"
-    images, named_accounts = extract_map_images.extract_images_from_accounts_file("analyzed_features/" + file_path)
+    images, named_accounts = extract_map_images.extract_images_from_accounts_file("analyzed_features/" + file_path, 20, True)
     plot_image_accounts_list(images, named_accounts)
     
     

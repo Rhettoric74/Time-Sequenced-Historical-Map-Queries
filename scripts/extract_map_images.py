@@ -8,6 +8,9 @@ import os
 import cv2
 import config
 import random
+import sys
+sys.path.append(os.path.join(os.getcwd(), "scripts/knowledge_graphs"))
+from place_node import PlaceNode
 
 def find_image_url_in_fields(field_values):
     link_indicator = "'Download 1': ['<a href="
@@ -96,19 +99,31 @@ def estimate_image_size(map_id):
                     topmost = point[1]
         return (leftmost, topmost, rightmost, bottommost)
     
-def extract_images_from_accounts_file(filename, max_sample = None):
+def extract_images_from_accounts_file(filename, max_sample = None, use_place_node = False):
     """
     Purpose: get an array of cropped images for each map in a named account file
     Parameters: filename (string), a path to the file containing the named accounts you want to extract cropped images of
     returns: a tuple containing the image array followed by the corresponding list of named accounts"""
     ids_to_urls = map_ids_to_image_urls()
     images = []
-    accounts_list = list_accounts_in_order(filename)
-    if max_sample != None and max_sample > len(accounts_list):
+    if use_place_node:
+        # use place node class to get ordered accounts list if the file is in the new format 
+        accounts_list = PlaceNode(filename).list_accounts_in_order()
+    else:
+        accounts_list = list_accounts_in_order(filename)
+    if max_sample != None and max_sample < len(accounts_list):
         accounts_list = random.sample(accounts_list, max_sample)
         accounts_list.sort()
+    print(len(accounts_list))
+    counter = 1
     for account in accounts_list:
+        print(counter)
+        counter += 1
         image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account.variant_name))
-        images.append(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        try:
+            converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            images.append(converted_image)
+        except:
+            print("image failed to be appended")
     return images, accounts_list
         
