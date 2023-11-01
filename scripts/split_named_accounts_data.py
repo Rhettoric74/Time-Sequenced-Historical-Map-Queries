@@ -1,5 +1,9 @@
-from scripts.variation_stats import *
+import sys
 import os
+sys.path.append(os.path.dirname("config.py"))
+sys.path.append("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/scripts/knowledge_graphs")
+from scripts.variation_stats import *
+from place_node import PlaceNode
 
 class NameSplit:
     def __init__(self, purity_gain, split_index, split_threshold = None, name_variant = ""):
@@ -69,3 +73,12 @@ def check_accounts_impurity(accounts_list, variant_name):
         if account.variant_name != variant_name:
             non_matches += 1
     return non_matches / len(accounts_list)
+if __name__ == "__main__":
+    dirname = "german_cities"
+    for accounts_filename in os.listdir("analyzed_features/" + dirname):
+        pn = PlaceNode("analyzed_features/" + dirname + "/" + accounts_filename)
+        accounts_list = pn.list_accounts_in_order(True, 60)
+        if len(accounts_list) > 5 and check_accounts_purity(accounts_list)[1] < 0.9:
+            plot_named_accounts(accounts_list)
+            print(accounts_filename)
+            print(get_split_threshold(accounts_list))

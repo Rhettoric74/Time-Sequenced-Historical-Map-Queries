@@ -1,0 +1,32 @@
+Paris
+Marseille
+Lyon
+Toulouse
+Nice
+Nantes
+Montpellier
+Strasbourg
+Bordeaux
+Lille
+Rennes
+Reims
+Toulon
+Saint-Étienne
+Le Havre
+Grenoble
+Dijon
+Angers
+Villeurbanne
+Nîmes
+Clermont-Ferrand
+Aix-en-Provence
+Le Mans
+Brest
+Tours
+Amiens
+Limoges
+Annecy
+Boulogne-Billancourt
+Perpignan
+Metz
+Besançon
