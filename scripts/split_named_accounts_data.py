@@ -74,11 +74,11 @@ def check_accounts_impurity(accounts_list, variant_name):
             non_matches += 1
     return non_matches / len(accounts_list)
 if __name__ == "__main__":
-    dirname = "german_cities"
-    for accounts_filename in os.listdir("analyzed_features/" + dirname):
-        pn = PlaceNode("analyzed_features/" + dirname + "/" + accounts_filename)
+    dirname = "distance_angle_capitalization_penalty"
+    for accounts_filename in os.listdir("scripts/multiword_queries/" + dirname):
+        pn = PlaceNode("scripts/multiword_queries/" + dirname + "/" + accounts_filename)
         accounts_list = pn.list_accounts_in_order(True, 60)
-        if len(accounts_list) > 5 and check_accounts_purity(accounts_list)[1] < 0.9:
+        if len(accounts_list) > 5 or (len(accounts_list) > 0 and check_accounts_purity(accounts_list)[1] < 0.9):
             plot_named_accounts(accounts_list)
             print(accounts_filename)
             print(get_split_threshold(accounts_list))
