@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from fuzzywuzzy import fuzz
 
 class NamedAccount:
-    def __init__(self, variant_name, year, map_id):
+    def __init__(self, variant_name, year, map_id, fuzzy_ratio = None):
         self.variant_name = variant_name
         self.year = year
         self.map_id = map_id
+        self.fuzzy_ratio = fuzzy_ratio
     def __repr__(self):
         return str(self.year) + ": " + str(self.variant_name)
     def __lt__(self, other):

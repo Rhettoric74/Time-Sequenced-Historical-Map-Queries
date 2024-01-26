@@ -3,6 +3,7 @@ import os
 import copy
 import json
 from fuzzywuzzy import fuzz
+import numpy as np
 class KnowledgeGraph(object):
     def __init__(self):
         self.place_nodes = []
@@ -49,6 +50,7 @@ class KnowledgeGraph(object):
         timespan = (-float("inf"), float("inf"))
         nodes_queue = [self.place_nodes[0]]
         visited_nodes = {}
+        num_matches = 0
         while len(nodes_queue) > 0 and cur_range > sufficient_specificity:
             cur_node = nodes_queue.pop(0)
             #print(cur_node.name)
@@ -82,6 +84,7 @@ class KnowledgeGraph(object):
                             if neighbor not in visited_nodes:
                                 nodes_queue.append(neighbor)
                         found_neighbor = True
+                        num_matches += 1
                         break
             # add a different node to the queue if the place was not found
             if not found_neighbor:
@@ -90,7 +93,7 @@ class KnowledgeGraph(object):
                         nodes_queue.append(node)
                         break
 
-        return timespan
+        return num_matches, timespan
 
 
     def __str__(self):
@@ -117,4 +120,20 @@ if __name__ == "__main__":
         print(len(place_node.name_variant_nodes))
         place_node.combine_similar_variants()
         print(len(place_node.name_variant_nodes))
-    print("Date: ", kg.date_map("0537054.geojson"))
+    place_file = "C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/german_cities/Hamburg_dates.json"
+    numbers_of_matches = []
+    timespan_specificities = []
+    with open(place_file) as fp:
+        map_collection = json.load(fp)
+        for key in map_collection["Hamburg"]:
+            for attestation in map_collection["Hamburg"][key]:
+                num_matches, timespan = kg.date_map(attestation["map_id"] + ".geojson")
+                print(timespan)
+                numbers_of_matches.append(num_matches)
+                timespan_specificities.append(timespan[1] - timespan[0])
+    print("Average Matches found:", np.mean(numbers_of_matches))
+    print("STD of matches found:", np.std(numbers_of_matches))
+    print("Average timespan Specificity:", np.mean(timespan_specificities))
+    print("STD of timespan specificites:", np.std(timespan_specificities))
+
+

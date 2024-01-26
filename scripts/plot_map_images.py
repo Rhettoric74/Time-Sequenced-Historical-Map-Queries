@@ -42,10 +42,14 @@ def plot_image_accounts_list(images, named_accounts):
     i = 0
     for index, accounts in decades_indices_to_accounts.items():
         for row in range(len(accounts)):
+            if i < len(images):
+                axes[row, index].imshow(images[i], cmap='gray')
+                axes[row, index].set_title(str(int(named_accounts[i].year)))
+                axes[row, index].text(0.5, -0.1, named_accounts[i].variant_name, ha='center', va='center', transform=axes[row, index].transAxes)
+                i += 1
+            else:
+                print("unexpected index i")
 
-            axes[row, index].imshow(images[i], cmap='gray')
-            axes[row, index].set_title(str(int(named_accounts[i].year)))
-            i += 1
     for i in range(num_decades):
         for j in range(rows):
             axes[j, i].axis('off')
@@ -91,7 +95,7 @@ if __name__ == "__main__":
 
     # to instead see a plotted output for a previous query for "Oslo", uncomment the next line
     # query_results_path = "world_capitals/" + "Oslo" + "_dates.json"
-    images, named_accounts = extract_map_images.extract_images_from_accounts_file("analyzed_features/" + file_path, 20, True)
+    images, named_accounts = extract_map_images.extract_images_from_accounts_file("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/" + file_path, max_sample, True)
     plot_image_accounts_list(images, named_accounts)
     
     

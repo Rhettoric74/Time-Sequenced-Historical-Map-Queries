@@ -1,5 +1,26 @@
 import numpy as np
 import math
+import numpy as np
+from scipy.spatial import ConvexHull
+import cv2
+
+def convex_hull_min_area_rect(points):
+    # Example set of points
+    try:
+        if len(points) > 1:
+            print("Multiple polygons")
+        converted_points = np.float32(np.array(points[0]))
+        # Compute convex hull
+        hull = ConvexHull(converted_points)
+
+        # Extract convex hull vertices
+        hull_vertices = converted_points[hull.vertices]
+
+        # Compute minimum bounding rectangle
+        rect = cv2.minAreaRect(hull_vertices)
+    except:
+        rect = ((0, 0), (0.001, 0.001, 0))
+    return rect
 def get_centroid(points):
     """
     Purpose: get the centroid of a list of point coordinates
@@ -44,7 +65,7 @@ def extract_bounds(points, fclass = "N"):
     while isinstance(points[0][0], list):
         # remove unnecessary nesting of lists
         points = points[0]
-    fclass_margins = {"P":1, "S": 1, "T": 2, "A":1, "H":20, "L": 1, "N":0}
+    fclass_margins = {"P":1, "S": 1, "T": 2, "A":5, "H":20, "L": 1, "N":0}
     distance = fclass_margins[fclass] / 2
     centroid = get_centroid(points)
     min_long = centroid[0] - distance
@@ -119,6 +140,9 @@ def overlaps_with_map_bbox(map_bounds, points):
             return True
     return False
 def haversine_distance(coord1, coord2):
+    """
+    Gives the distance between two geographic coordinates in meters, based on the haversine formula
+    """
     # Radius of the Earth in meters
     earth_radius = 6371000  # approximately 6,371 kilometers
 
@@ -141,6 +165,31 @@ def haversine_distance(coord1, coord2):
 
     return distance
 
+def within_bounding(bounding, points):
+    """
+    Purpose: determine if a set of points overlaps with the largest bounding box found in the entity
+    Parameters: points, a list of coordinates
+    Returns: Boolean, whether the at least one of the points is within the bounding of the box
+    """
+    # format points to be a singly-nested list of coorinates
+    # e.g. [[x1,y1],[x2,y2],...[xn,yn]]
+
+    if not isinstance(points[0], list):
+        points = [points]
+    while isinstance(points[0][0], list):
+        # remove unnecessary nesting of lists
+        points = points[0]
+    
+    for point in points:
+        if point[0] >= bounding[0][0] and point[0] <= bounding[1][0] and point[1] >= bounding[0][1] and point[1] <= bounding[1][1]:
+            return True
+    points_bbox = extract_bounds(points)
+    for bounding_point in bounding:
+        if bounding_point[0] >= points_bbox[0][0] and bounding_point[0] <= points_bbox[1][0] and bounding_point[1] >= points_bbox[0][1] and bounding_point[1] <= points_bbox[1][1]:
+            return True
+    return False
 
 
+if __name__ == "__main__":
+    print(convex_hull_min_area_rect([[[-74.881461, 41.6779], [-74.88018, 41.677876], [-74.878279, 41.677785], [-74.877283, 41.677772], [-74.876414, 41.677999], [-74.87607, 41.679414], [-74.875851, 41.68082], [-74.875288, 41.681784], [-74.876342, 41.683565], [-74.878409, 41.684011], [-74.880279, 41.684079], [-74.8811, 41.684047], [-74.882215, 41.68364], [-74.882203, 41.682809], [-74.88185, 41.68147], [-74.881629, 41.679205], [-74.881461, 41.6779]]]))
                                      

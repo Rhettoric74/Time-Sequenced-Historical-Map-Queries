@@ -9,7 +9,11 @@ import cv2
 import config
 import random
 import sys
+import coordinate_geometry
+from multiword_queries.map_graph import MapGraph, prims_mst
 sys.path.append(os.path.join(os.getcwd(), "scripts/knowledge_graphs"))
+sys.path.append(os.path.join(os.getcwd(), "scripts/multiword_queries"))
+from multiword_queries.multiword_query import search_from_node
 from place_node import PlaceNode
 
 def find_image_url_in_fields(field_values):
@@ -59,9 +63,11 @@ def get_cropping_bbox(img_coords):
     Params: img_coords, a list of 2-d integer pixel coordinates from the map image
     Returns: a 4 element tuple of the form (leftmost_coord, topmost_coord, rightmost_coord, bottommost_coord)
     """
+    if img_coords == None:
+        return None
     leftmost_coord = float("inf")
     topmost_coord = float("inf")
-    bottommost_coord = -float("inf")
+    bottommost_coord = - float("inf")
     rightmost_coord = - float("inf")
     for point in img_coords:
         if point[1] > bottommost_coord:
@@ -73,13 +79,39 @@ def get_cropping_bbox(img_coords):
         if point[0] > rightmost_coord:
             rightmost_coord = point[0]
     return (max(0,leftmost_coord - 300), max(0, topmost_coord - 300), rightmost_coord + 300, bottommost_coord + 300)
-def find_image_cropping(map_id, feature_name, ratio_threshold = 90):
+def find_image_cropping(map_id, account):
+    feature_name = account.variant_name
     with open(config.GEOJSON_FOLDER +  map_id + ".geojson") as json_file:
         map_data = json.load(json_file)
         for feature in map_data["features"]:
-            if fuzz.ratio(feature_name.upper(), feature["properties"]["text"].upper()) > ratio_threshold:
+            if fuzz.ratio(feature_name.upper(), feature["properties"]["text"].upper()) >= account.fuzzy_ratio:
                 image_coordinates = feature["properties"]["img_coordinates"]
                 return get_cropping_bbox(image_coordinates)
+def find_multiword_image_cropping(map_id, account, largest_bounding):
+    map_graph = MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/" + config.GEOJSON_FOLDER + map_id + ".geojson")
+    overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
+    feature_name = account.variant_name
+
+    map_graph = MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/" + config.GEOJSON_FOLDER + map_id + ".geojson")
+    overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
+    prims_mst(overlapping_nodes)
+    frontier = [overlapping_nodes[0]]
+    explored = []
+    num_words = feature_name.count(" ")
+    image_coordinates = None
+    while frontier != []:
+        cur_node = frontier.pop(0)
+        explored.append(cur_node)
+        node_sequences = search_from_node(cur_node, num_words)
+        #print(node_sequences)
+        for node_sequence in node_sequences:
+            joined_text = " ".join([node.post_ocr for node in node_sequence])
+            cur_ratio = fuzz.ratio(joined_text.upper(), feature_name.upper())
+            if cur_ratio >= account.fuzzy_ratio: 
+                image_coordinates = []
+                for node in node_sequence:
+                    image_coordinates += node.img_coordinates
+    return get_cropping_bbox(image_coordinates)
 def estimate_image_size(map_id):
     with open(config.GEOJSON_FOLDER + map_id + ".geojson") as json_file:
         map_data = json.load(json_file)
@@ -106,6 +138,12 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
     returns: a tuple containing the image array followed by the corresponding list of named accounts"""
     ids_to_urls = map_ids_to_image_urls()
     images = []
+    with open(filename) as fp:
+        obj = json.load(fp)
+        keys_list = list(obj.keys())
+        keys_list.remove("geojson")
+        largest_bounding = obj[keys_list[0]]["largest_bounding_box"]
+    
     if use_place_node:
         # use place node class to get ordered accounts list if the file is in the new format 
         accounts_list = PlaceNode(filename).list_accounts_in_order()
@@ -119,11 +157,16 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
     for account in accounts_list:
         print(counter)
         counter += 1
-        image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account.variant_name))
         try:
+            # determine how to find cropping based on whether the name is a single word or multiple words
+            if (len(account.variant_name.split(" ")) == 1):
+                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account))
+            else:
+                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_multiword_image_cropping(account.map_id, account, largest_bounding))
+
             converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             images.append(converted_image)
-        except:
-            print("image failed to be appended")
+        except Exception as e:
+            print(e, "image failed to be appended")
     return images, accounts_list
         
