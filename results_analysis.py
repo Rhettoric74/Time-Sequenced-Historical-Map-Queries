@@ -1,7 +1,7 @@
 import json
 import os
 import numpy as np
-results_folder = "scripts/multiword_queries/distance_angle_capitalization_penalty"
+results_folder = "scripts/multiword_queries/half_mst_distance_angle_capitalization_penalty"
 maps_per_city = []
 timespans = []
 variants_recognized = []

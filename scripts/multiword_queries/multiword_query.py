@@ -1,4 +1,4 @@
-from map_graph import MapGraph, FeatureNode, prims_mst
+from map_graph import MapGraph, FeatureNode, prims_mst, half_prims_mst
 import json
 import sys
 import os
@@ -14,7 +14,7 @@ from scripts.extract_year import extract_years
 from scripts.match_countries_to_map_ids import countries_to_ids_dict
 
 
-def multiword_query(place_name, fclasses = None, similarity_threshold = 85):
+def multiword_query(place_name, fclasses = None, similarity_threshold = 85, connecting_function = half_prims_mst):
     entity = GeoEntity(place_name, fclasses)
     matches = {}
     i = 0
@@ -39,7 +39,7 @@ def multiword_query(place_name, fclasses = None, similarity_threshold = 85):
             continue
         overlapping_nodes = [node for node in map_graph.nodes if entity.within_bounding(node.coordinates)]
         if len(overlapping_nodes) > 0 and len(overlapping_nodes) < 500:
-            prims_mst(overlapping_nodes, FeatureNode.distance_sin_angle_capitalization_penalty)
+            connecting_function(overlapping_nodes, FeatureNode.distance_sin_angle_capitalization_penalty)
             frontier = [overlapping_nodes[0]]
             explored = []
             closest_variant = None
@@ -114,7 +114,7 @@ def search_from_node(node, depth, path = []):
                 paths.append(new_path)
     return paths
 if __name__ == "__main__":
-    queries = ["British Columbia", "New South Wales", "South Carolina"]
+    queries = ["Cedar Rapids", "Carson City", "South Dakota"]
     for query in queries:
         try:
             print(query)
@@ -122,7 +122,7 @@ if __name__ == "__main__":
             query_results["geojson"] = GeoEntity(query).geojson
             with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/input_queries/" + query + "_dates.json", "w") as fw:
                 json.dump(query_results, fw)
-            with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/scripts/multiword_queries/distance_angle_capitalization_penalty/" + query + "_dates.json", "w") as fw:
+            with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/scripts/multiword_queries/half_mst_distance_angle_capitalization_penalty/" + query + "_dates.json", "w") as fw:
                 json.dump(query_results, fw)
         except Exception as e:
             print(e)

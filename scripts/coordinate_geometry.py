@@ -189,7 +189,20 @@ def within_bounding(bounding, points):
             return True
     return False
 
+def scale_bbox(bounding_box, scale_coeff):
+    """
+    Puropse: scale up the size of a coordinate bounding box by a given coefficient
+    parameters: bounding_box, a list of 2 coordinates representing the bounding box to scale up,
+        scale_coefficient: a positive number to multiply the height and width of the bounding box by, using the same center
+    Returns: a list of 2 coordinats of the format [[min_long, min_lat], [max_long, max_lat]]
+    """
+    width = bounding_box[1][0] - bounding_box[0][0]
+    height = bounding_box[1][1] - bounding_box[0][1]
+    center = [bounding_box[0][0] + (width / 2), bounding_box[0][1] + (height / 2)]
+    new_bbox = [[center[0] - (width * scale_coeff / 2), center[1] - (height * scale_coeff / 2)], 
+                [center[0] + (height * scale_coeff / 2), center[1] + (height * scale_coeff / 2)]]
+    print(new_bbox)
+    return new_bbox
 
 if __name__ == "__main__":
-    print(convex_hull_min_area_rect([[[-74.881461, 41.6779], [-74.88018, 41.677876], [-74.878279, 41.677785], [-74.877283, 41.677772], [-74.876414, 41.677999], [-74.87607, 41.679414], [-74.875851, 41.68082], [-74.875288, 41.681784], [-74.876342, 41.683565], [-74.878409, 41.684011], [-74.880279, 41.684079], [-74.8811, 41.684047], [-74.882215, 41.68364], [-74.882203, 41.682809], [-74.88185, 41.68147], [-74.881629, 41.679205], [-74.881461, 41.6779]]]))
-                                     
+    print(scale_bbox([[53.89696, 23.95118], [54.89696, 24.95118]], 2))
