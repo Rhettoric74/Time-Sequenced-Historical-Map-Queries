@@ -2,6 +2,7 @@ import json
 import math
 import sys
 import os
+import numpy as np
 import time
 sys.path.append("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/scripts")
 import coordinate_geometry
@@ -24,9 +25,40 @@ class FeatureNode:
         self.neighbors = []
     def distance(self, other):
         """
-        gives the geographic distance (in meters) between the centroids of the polygons, based on the haversine formula 
+        gives the geographic distance (in meters) between the two polygons, based on the haversine formula distance
+        computed for pairs of coordinates on the medians of each side of their minimum bounding boxes
         """
-        return coordinate_geometry.haversine_distance(self.centroid, other.centroid)
+        # get the medians of the four edges of each bounding box
+        medians = [[], []]
+        rectangles = [self.minimum_bounding_box, other.minimum_bounding_box]
+        for i in range(len(rectangles)): 
+            # Extract the rectangle properties
+            center, size, angle = rectangles[i]
+            cx, cy = center
+            width, height = size
+
+            # Calculate the medians with rotation consideration
+            rotation_rad = np.radians(angle)  # Convert rotation angle to radians
+
+            # Calculate the rotated medians
+            medians[i].append([
+                cx - 0.5 * width * np.cos(rotation_rad),
+                cy - 0.5 * width * np.sin(rotation_rad)
+            ])
+            medians[i].append([
+                cx + 0.5 * width * np.cos(rotation_rad),
+                cy + 0.5 * width * np.sin(rotation_rad)
+            ])
+            medians[i].append([
+                cx - 0.5 * height * np.sin(rotation_rad),
+                cy + 0.5 * height * np.cos(rotation_rad)
+            ])
+            medians[i].append([
+                cx + 0.5 * height * np.sin(rotation_rad),
+                cy - 0.5 * height * np.cos(rotation_rad)
+            ])
+        distances = [coordinate_geometry.haversine_distance(s, o) for s in medians[0] for o in medians[1]]
+        return min(distances)
     def height_difference(self, other):
         return math.fabs(self.minimum_bounding_box[1][1] - other.minimum_bounding_box[1][1])
     def sin_angle_difference(self, other):
@@ -49,7 +81,9 @@ class FeatureNode:
 def prims_mst(nodes_list, distance_func = FeatureNode.height_difference):
     """
     Create a minimum spanning tree of a graph of nodes based on the distance function that is passed
-    Parameters: nodes list: a list of Feature Nodes, """
+    Parameters: nodes list: a list of Feature Nodes, 
+        distance_func: a function to compute the distance between two feature nodes
+    Returns: None, modifies the nodes list to connect them into a MST"""
     vertices_list = [{"vertex":node, "key":float("inf"), "parent": None} for node in nodes_list]
     all_neighbors = copy.copy(vertices_list)
     vertices_list[0]["key"] = 0
@@ -67,6 +101,33 @@ def prims_mst(nodes_list, distance_func = FeatureNode.height_difference):
             if node["parent"]["vertex"] not in node["vertex"].neighbors:
                 node["vertex"].neighbors.append(node["parent"]["vertex"])
             if node["vertex"] not in node["parent"]["vertex"].neighbors:
+                node["parent"]["vertex"].neighbors.append(node["vertex"])
+def half_prims_mst(nodes_list, distance_func = FeatureNode.height_difference):
+    """
+    Create a minimum spanning tree of a graph of nodes based on the distance function that is passed,
+    and then removes all of the edges that have a distance that is greater than average
+    Parameters: nodes list: a list of Feature Nodes, 
+        distance_func: a function to compute the distance between two feature nodes
+    Returns: None, modifies the nodes list to connect them into a MST with the half of the edges with the longest
+    distances removed"""
+    vertices_list = [{"vertex":node, "key":float("inf"), "parent": None} for node in nodes_list]
+    all_neighbors = copy.copy(vertices_list)
+    vertices_list[0]["key"] = 0
+    while vertices_list != []:
+        u = min(vertices_list, key = lambda vertex: vertex["key"])
+        vertices_list.remove(u)
+        for other_vertex in all_neighbors:
+            if other_vertex != u:
+                d = distance_func(other_vertex["vertex"], u["vertex"]) 
+                if other_vertex in vertices_list and d < other_vertex["key"]:
+                    other_vertex["parent"] = u
+                    other_vertex["key"] = distance_func(other_vertex["vertex"], u["vertex"])
+    median_distance = np.median([v["key"] for v in all_neighbors])
+    for node in all_neighbors:
+        if node["parent"] != None:
+            if node["parent"]["vertex"] not in node["vertex"].neighbors and node["key"] < median_distance:
+                node["vertex"].neighbors.append(node["parent"]["vertex"])
+            if node["vertex"] not in node["parent"]["vertex"].neighbors and node["parent"]["key"] < median_distance:
                 node["parent"]["vertex"].neighbors.append(node["vertex"])
 def spanning_tree_k_neighbors(nodes_list, k = 10):
     vertices_list = [{"index": i,"vertex":node, "key":float("inf"), "parent": None} for i, node in enumerate(nodes_list)]

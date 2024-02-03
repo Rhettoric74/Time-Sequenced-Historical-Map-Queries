@@ -9,12 +9,14 @@ import cv2
 import config
 import random
 import sys
+import math
 import coordinate_geometry
-from multiword_queries.map_graph import MapGraph, prims_mst
+from multiword_queries.map_graph import FeatureNode, MapGraph, prims_mst
 sys.path.append(os.path.join(os.getcwd(), "scripts/knowledge_graphs"))
 sys.path.append(os.path.join(os.getcwd(), "scripts/multiword_queries"))
 from multiword_queries.multiword_query import search_from_node
 from place_node import PlaceNode
+from pixel_georefereferencing import transform_bbox
 
 def find_image_url_in_fields(field_values):
     link_indicator = "'Download 1': ['<a href="
@@ -51,10 +53,18 @@ def load_image(map_id, image_content, cropping = None):
     # Decode the JP2 image using opencv
     image = cv2.imread("map_images/" +map_id + '.jp2')
     # Check if the image was read successfully
+    # make sure that image cropping does not go out of array bounds
+    height, width, channels = image.shape
+    cropping[1] = min(width, max(cropping[1], 0))
+    cropping[3] = min(width, max(cropping[3], 0))
+    cropping[0] = min(height, max(cropping[0], 0))
+    cropping[2] = min(height, max(cropping[2], 0))
+    print(cropping)
+
     if image is not None:
         # Display the image using OpenCV
         if cropping != None:
-            image = image[cropping[1]:cropping[3], cropping[0]:cropping[2]]
+            image = image[min(cropping[1], cropping[3]):max(cropping[1], cropping[3]), min(cropping[0], cropping[2]): max(cropping[0], cropping[2])]
     return image
 
 def get_cropping_bbox(img_coords):
@@ -94,7 +104,7 @@ def find_multiword_image_cropping(map_id, account, largest_bounding):
 
     map_graph = MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/" + config.GEOJSON_FOLDER + map_id + ".geojson")
     overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
-    prims_mst(overlapping_nodes)
+    prims_mst(overlapping_nodes, FeatureNode.distance_sin_angle_capitalization_penalty)
     frontier = [overlapping_nodes[0]]
     explored = []
     num_words = feature_name.count(" ")
@@ -158,12 +168,12 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
         print(counter)
         counter += 1
         try:
-            # determine how to find cropping based on whether the name is a single word or multiple words
+            """ # determine how to find cropping based on whether the name is a single word or multiple words
             if (len(account.variant_name.split(" ")) == 1):
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account))
             else:
-                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_multiword_image_cropping(account.map_id, account, largest_bounding))
-
+                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_multiword_image_cropping(account.map_id, account, largest_bounding)) """
+            image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), transform_bbox(account.map_id, coordinate_geometry.scale_bbox(largest_bounding, 4)))
             converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             images.append(converted_image)
         except Exception as e:
