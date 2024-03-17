@@ -4,12 +4,18 @@ import numpy as np
 from scipy.spatial import ConvexHull
 import cv2
 
+
+def euclidean_distance(point1, point2):
+    return np.linalg.norm(np.array(point2) - np.array(point1))
+
 def convex_hull_min_area_rect(points):
     # Example set of points
     try:
-        if len(points) > 1:
-            print("Multiple polygons")
-        converted_points = np.float32(np.array(points[0]))
+        if len(points) == 1:
+            # if polygon is a 3-d list, remove one level of nesting to get proper
+            dimensions
+            points = points[0]
+        converted_points = np.float32(np.array(points))
         # Compute convex hull
         hull = ConvexHull(converted_points)
 
@@ -18,8 +24,9 @@ def convex_hull_min_area_rect(points):
 
         # Compute minimum bounding rectangle
         rect = cv2.minAreaRect(hull_vertices)
-    except:
-        rect = ((0, 0), (0.001, 0.001, 0))
+    except Exception as e:
+        print(e)
+        rect = ((0, 0), (0.001, 0.001), 0)
     return rect
 def get_centroid(points):
     """

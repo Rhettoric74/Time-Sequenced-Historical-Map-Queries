@@ -95,7 +95,7 @@ if __name__ == "__main__":
 
     # to instead see a plotted output for a previous query for "Oslo", uncomment the next line
     # query_results_path = "world_capitals/" + "Oslo" + "_dates.json"
-    images, named_accounts = extract_map_images.extract_images_from_accounts_file("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/" + file_path, max_sample, True)
+    images, named_accounts = extract_map_images.extract_images_from_accounts_file("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/" + file_path, max_sample, True)
     plot_image_accounts_list(images, named_accounts)
     
     
