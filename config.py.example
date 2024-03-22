@@ -11,4 +11,4 @@ GEOJSON_FOLDER = '/your/absolute/path/geojson_testr_syn/'
 #######################################
 # Coordinate system used in GeoJSON folder
 #######################################
-COORD_SYSTEM = 'EPSG:'
+COORD_SYSTEM = 'EPSG:4326''
