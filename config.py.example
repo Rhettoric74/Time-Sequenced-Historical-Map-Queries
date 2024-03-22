@@ -7,3 +7,8 @@ METADATA_CSV = '/your/absolute/path/luna_omo_metadata_56628_20220724.csv'
 # Path to the GeoJSON folder
 #######################################
 GEOJSON_FOLDER = '/your/absolute/path/geojson_testr_syn/'
+
+#######################################
+# Coordinate system used in GeoJSON folder
+#######################################
+COORD_SYSTEM = 'EPSG:'
