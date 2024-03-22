@@ -3,6 +3,38 @@ import math
 import numpy as np
 from scipy.spatial import ConvexHull
 import cv2
+import sys
+import os
+sys.path.append(os.path.dirname("config.py"))
+import config
+from pyproj import Transformer
+
+
+
+global CRS_TRANSFORMER
+CRS_TRANSFORMER = Transformer.from_crs(config.COORD_SYSTEM, 'EPSG:4326')
+
+def transform_coords_point(coords):
+    lat_long = list(CRS_TRANSFORMER.transform(coords[0], coords[1]))
+    
+    return [lat_long[1], lat_long[0]]
+def transform_coords_list(coords_list):
+    transformed_coords = []
+    for coords in coords_list:
+        if isinstance(coords[0], list):
+            transformed_coords.append(transform_coords_list(coords))
+        else:
+            if coords == None:
+                print("coords is none")
+            lat_long = list(CRS_TRANSFORMER.transform(coords[0], coords[1]))
+            
+            transformed_coords.append([lat_long[1], lat_long[0]])
+    return transformed_coords
+
+            
+    
+    
+    
 
 
 def euclidean_distance(point1, point2):
@@ -12,8 +44,7 @@ def convex_hull_min_area_rect(points):
     # Example set of points
     try:
         if len(points) == 1:
-            # if polygon is a 3-d list, remove one level of nesting to get proper
-            dimensions
+            # if polygon is a 3-d list, remove one level of nesting to get proper dimensions
             points = points[0]
         converted_points = np.float32(np.array(points))
         # Compute convex hull
@@ -106,7 +137,13 @@ def estimate_map_bounds(feature_collection):
     northeast_lat = -float("inf")
 
     for feature in feature_collection["features"]:
+        
+        if feature["geometry"] == None:
+            continue
+
         coords = feature["geometry"]["coordinates"]
+        if config.COORD_SYSTEM != "EPSG:4326":
+            coords = transform_coords_list(coords)
         # format the coordinates as a list of 2-d coordinate lists
         if not isinstance(coords[0], list):
             coords = [coords]
@@ -212,4 +249,6 @@ def scale_bbox(bounding_box, scale_coeff):
     return new_bbox
 
 if __name__ == "__main__":
-    print(scale_bbox([[53.89696, 23.95118], [54.89696, 24.95118]], 2))
+    coords_list = [[[-10857634.027059, 6088574.958439], [-10839493.446076, 6074727.61306], [-10822287.310139, 6059230.465248], [-10804566.619903, 6044753.124999], [-10787935.583649, 6030668.21589], [-10772052.312572, 6016690.79711], [-10755644.478886, 6003470.337496], [-10738518.527958, 5991742.456989], [-10754468.52302, 5958709.915886], [-10772376.465438, 5970444.51805], [-10790268.011299, 5984323.767584], [-10807420.351831, 5999011.944772], [-10824151.817156, 6013033.288396], [-10841970.899838, 6027638.982988], [-10859199.57738, 6042872.171881], [-10877734.676087, 6057026.387551], [-10857634.027059, 6088574.958439]]]
+    print(transform_coords_point([-10857634.027059, 6088574.958439]))
+    print(transform_coords_list(coords_list))

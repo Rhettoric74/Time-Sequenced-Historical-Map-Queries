@@ -4,7 +4,7 @@ import sys
 import os
 import numpy as np
 import time
-sys.path.append("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/scripts")
+sys.path.append("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts")
 import coordinate_geometry
 import copy
 class FeatureNode:
@@ -171,4 +171,4 @@ class MapGraph:
         return sting_representation
 
 if __name__ == "__main__":
-    print(MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/geojson_testr_syn/11320000.geojson", prims_mst))
+    print(MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/geojson_testr_syn/11320000.geojson", prims_mst))

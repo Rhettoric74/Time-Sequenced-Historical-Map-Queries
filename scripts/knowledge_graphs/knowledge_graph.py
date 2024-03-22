@@ -44,7 +44,7 @@ class KnowledgeGraph(object):
         all name variants that are depicted.
         Parameters: map_filename, the name of a geojson processed output file for the map to be dated.
         Returns: a tuple (earliest_year, latest_year) giving a range for the date of the map"""
-        with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/geojson_testr_syn/" + map_filename, "r") as json_file:
+        with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/geojson_testr_syn/" + map_filename, "r") as json_file:
             feature_collection = json.load(json_file)
         cur_range = float("inf")
         timespan = (-float("inf"), float("inf"))
@@ -111,7 +111,7 @@ class KnowledgeGraph(object):
             
 if __name__ == "__main__":
     kg = KnowledgeGraph()
-    kg.read_from_dir("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/input_queries")
+    kg.read_from_dir("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries")
     print(kg)
     for node in kg.place_nodes:
         for name_variant in node.name_variant_nodes:
@@ -120,7 +120,7 @@ if __name__ == "__main__":
         print(len(place_node.name_variant_nodes))
         place_node.combine_similar_variants()
         print(len(place_node.name_variant_nodes))
-    place_file = "C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/german_cities/Hamburg_dates.json"
+    place_file = "C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/german_cities/Hamburg_dates.json"
     numbers_of_matches = []
     timespan_specificities = []
     with open(place_file) as fp:

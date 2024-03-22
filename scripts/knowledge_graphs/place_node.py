@@ -75,7 +75,7 @@ class PlaceNode(GeoEntity):
         return accounts_list
 
 if __name__ == '__main__':
-    pn = PlaceNode("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/input_queries/Berlin_dates.json")
+    pn = PlaceNode("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/Berlin_dates.json")
     print(len(pn.name_variant_nodes))
     print(pn)
     for name_variant_node in pn.name_variant_nodes:

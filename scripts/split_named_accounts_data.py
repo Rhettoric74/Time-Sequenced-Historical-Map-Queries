@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.append(os.path.dirname("config.py"))
-sys.path.append("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/scripts/knowledge_graphs")
+sys.path.append("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/knowledge_graphs")
 from scripts.variation_stats import *
 from place_node import PlaceNode
 
@@ -74,9 +74,12 @@ def check_accounts_impurity(accounts_list, variant_name):
             non_matches += 1
     return non_matches / len(accounts_list)
 if __name__ == "__main__":
-    dirname = "distance_angle_capitalization_penalty"
-    for accounts_filename in os.listdir("scripts/multiword_queries/" + dirname):
-        pn = PlaceNode("scripts/multiword_queries/" + dirname + "/" + accounts_filename)
+    dirname = "french_cities"
+    with open("analyzed_features/french_cities.txt", "r", encoding="utf-8") as fp:
+        french_cities_list = fp.readlines()
+    french_cities_list = [city_name.strip("\n") + "_dates.json" for city_name in french_cities_list]
+    for accounts_filename in french_cities_list:
+        pn = PlaceNode("analyzed_features/" + dirname + "/" + accounts_filename)
         accounts_list = pn.list_accounts_in_order(True, 60)
         if len(accounts_list) > 5 or (len(accounts_list) > 0 and check_accounts_purity(accounts_list)[1] < 0.9):
             plot_named_accounts(accounts_list)

@@ -98,11 +98,11 @@ def find_image_cropping(map_id, account):
                 image_coordinates = feature["properties"]["img_coordinates"]
                 return get_cropping_bbox(image_coordinates)
 def find_multiword_image_cropping(map_id, account, largest_bounding):
-    map_graph = MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/" + config.GEOJSON_FOLDER + map_id + ".geojson")
+    map_graph = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_id + ".geojson")
     overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
     feature_name = account.variant_name
 
-    map_graph = MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/" + config.GEOJSON_FOLDER + map_id + ".geojson")
+    map_graph = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_id + ".geojson")
     overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
     prims_mst(overlapping_nodes, FeatureNode.distance_sin_angle_capitalization_penalty)
     frontier = [overlapping_nodes[0]]

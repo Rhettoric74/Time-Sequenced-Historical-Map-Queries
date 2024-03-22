@@ -7,11 +7,14 @@ from multiword_name_extraction import extract_map_data_from_all_annotations
 sys.path.append("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts")
 import coordinate_geometry
 import copy
+PADDING_RATIO = 1.2
 class FeatureNode:
     def __init__(self, feature_obj):
         self.vertices = feature_obj["vertices"]
         self.text = feature_obj["text"]
         self.minimum_bounding_box = coordinate_geometry.convex_hull_min_area_rect(self.vertices)
+        self.padded_bounding_box = (self.minimum_bounding_box[0], (PADDING_RATIO * self.minimum_bounding_box[1][0], 
+                                            PADDING_RATIO * self.minimum_bounding_box[1][1]), self.minimum_bounding_box[2])
         #print(self.minimum_bounding_box)
         self.neighbors = set()
         self.illegible = feature_obj["illegible"]

@@ -44,12 +44,16 @@ def feature_query(feature_name, fclasses = None, ratio_threshold = 90):
         files_iterated += 1
         # open the file
         try:
-            with open(config.GEOJSON_FOLDER + file + ".geojson") as json_file:
+            with open(config.GEOJSON_FOLDER + file + ".geojson", "r", encoding='utf-8') as json_file:
                 # read the file's contents
                 data = json.load(json_file)
         except FileNotFoundError:
+            print("file not found")
             # skip files mentioned in csv file but not in the processed geojson dataset
             continue
+        except json.JSONDecodeError as e:
+            print(f"Error: Failed to decode JSON data. {e}")
+            print(file)
         # first check if the entity overlaps with the map's bounds
         if overlaps_with_map_bbox(estimate_map_bounds(data), entity.largest_bounding) == True:
             # iterate over all features in the file
@@ -58,7 +62,11 @@ def feature_query(feature_name, fclasses = None, ratio_threshold = 90):
             for feature in data["features"]:
                 post_ocr = str(feature["properties"]["postocr_label"]).upper()
                 # use fuzzy string comparison to detect a match with known name variants
+                if feature["geometry"] == None:
+                    continue
                 coords = feature["geometry"]["coordinates"]
+                if config.COORD_SYSTEM != "EPSG:4326":
+                    coords = coordinate_geometry.transform_coords_list(coords)
                 # check if the point is within the entity being queried
                 if entity.within_bounding(coords):
                     # check if features in the neighborhood match a known name
@@ -101,18 +109,18 @@ def dated_query(feature_name, fclasses = None):
     
 if __name__ == '__main__':
     russian_cities = []
-    with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/german_cities.txt", encoding="utf-8") as fp:
+    with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/french_cities.txt", encoding="utf-8") as fp:
         russian_cities = fp.readlines()
     for city in russian_cities:
-        try:
-            print(city)
-            query_results = {city.strip():dated_query(city.strip())}
-            query_results["geojson"] = GeoEntity(city.strip()).geojson
-            with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/input_queries/" + city.strip() + "_dates.json", "w") as fw:
-                json.dump(query_results, fw)
-            with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/french_cities/" + city.strip() + "_dates.json", "w") as fw:
-                json.dump(query_results, fw)
-        except Exception as e:
-            print(e)
-            continue
+        #try:
+        print(city)
+        query_results = {city.strip():dated_query(city.strip())}
+        query_results["geojson"] = GeoEntity(city.strip()).geojson
+        with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/" + city.strip() + "_dates.json", "w") as fw:
+            json.dump(query_results, fw)
+        with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features//french_cities/" + city.strip() + "_dates.json", "w") as fw:
+            json.dump(query_results, fw)
+    """ except Exception as e:
+        print(e)
+        continue """
         

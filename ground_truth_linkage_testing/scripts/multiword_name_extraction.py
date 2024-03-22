@@ -24,6 +24,19 @@ def find_multiword_phrases_in_map(map_data):
         if (cur_name.count(" ") >= 2):
             names.append(cur_name[:-1])
     return names
+def remove_groupings_from_annotations(map_annotations_dict):
+    removed_dict_annotations = {"image":map_annotations_dict["image"], "groups":[]}
+    for group in map_annotations_dict["groups"]:
+        for label in group:
+            removed_dict_annotations["groups"].append(label)
+    return removed_dict_annotations
+def list_all_word_labels(annotations_dict):
+    word_labels = []
+    for group in annotations_dict["groups"]:
+        for label in group:
+            word_labels.append(label["text"])
+    return word_labels
+
 def multiword_name_extraction_from_map(map_filename, data_filepath = "icdar24-train-png/annotations.json"):
     map_data = extract_map_data_from_all_annotations(map_filename, data_filepath)
     return find_multiword_phrases_in_map(map_data)
@@ -34,7 +47,7 @@ if __name__ == "__main__":
         print(multiword_name_extraction_from_map(map_name)) #,"C:/Users/rhett/Downloads/icdar24-val-png/icdar24-val-png/annotations.json"))
     print(multiword_name_extraction_from_map('5175001_h2_w4.png'))
     print(extract_map_data_from_all_annotations('5175001_h2_w4.png')) """
-    enough_multiword_phrases = []
+    """ enough_multiword_phrases = []
     counter = 0
     for file in os.listdir("icdar24-train-png/train_images"):
         counter += 1
@@ -44,5 +57,8 @@ if __name__ == "__main__":
         if len(names_list) >= THRESHOLD:
             enough_multiword_phrases.append(file)
     print(len(enough_multiword_phrases))
-    print(random.sample(enough_multiword_phrases, 10))
-        
+    print(random.sample(enough_multiword_phrases, 10)) """
+    words_list = list_all_word_labels(extract_map_data_from_all_annotations("7058000_h12_w23.png"))
+    random.shuffle(words_list)
+    print(words_list)
+

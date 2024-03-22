@@ -33,8 +33,8 @@ def multiword_query(place_name, fclasses = None, similarity_threshold = 85, conn
             print(str(i) + " geojson files searched")
         i += 1
         #print(map_file)
-        if os.path.isfile("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/" + config.GEOJSON_FOLDER + map_file + ".geojson"):
-            map_graph = MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/" + config.GEOJSON_FOLDER + map_file + ".geojson")
+        if os.path.isfile("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_file + ".geojson"):
+            map_graph = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_file + ".geojson")
         else:
             continue
         overlapping_nodes = [node for node in map_graph.nodes if entity.within_bounding(node.coordinates)]
@@ -120,9 +120,9 @@ if __name__ == "__main__":
             print(query)
             query_results = {query:dated_multiword_query(query)}
             query_results["geojson"] = GeoEntity(query).geojson
-            with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/analyzed_features/input_queries/" + query + "_dates.json", "w") as fw:
+            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/" + query + "_dates.json", "w") as fw:
                 json.dump(query_results, fw)
-            with open("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/scripts/multiword_queries/half_mst_distance_angle_capitalization_penalty/" + query + "_dates.json", "w") as fw:
+            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/half_mst_distance_angle_capitalization_penalty/" + query + "_dates.json", "w") as fw:
                 json.dump(query_results, fw)
         except Exception as e:
             print(e)

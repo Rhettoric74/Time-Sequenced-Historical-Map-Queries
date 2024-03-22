@@ -72,6 +72,6 @@ def make_map_graph_geojson(mg, filename):
         json.dump(feature_collection, f)
 if __name__ == "__main__":
     filename = "3449001"
-    mg = MapGraph("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis/geojson_testr_syn/" + filename + ".geojson")
+    mg = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/geojson_testr_syn/" + filename + ".geojson")
     half_prims_mst(mg.nodes, FeatureNode.distance_sin_angle_capitalization_penalty)
     make_map_graph_geojson(mg, "half_mst_distance_sin_angle_capitalization_penalty" + filename)

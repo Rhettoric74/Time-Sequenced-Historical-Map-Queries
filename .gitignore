@@ -6,9 +6,9 @@ __pycache__
 config.py
 /map_dating
 notes.txt
-/ground_truth_linkage_testing\kmeans_results
-/ground_truth_linkage_testing\mst_results
-/ground_truth_linkage_testing\half_mst_results
-/ground_truth_linkage_testing\icdar24-train-png
-/ground_truth_linkage_testing\icdar24-val-png
-/ground_truth_linkage_testing\scripts\annotated_linkage_visualizations
+/ground_truth_linkage_testing/kmeans_results
+/ground_truth_linkage_testing/mst_results
+/ground_truth_linkage_testing/half_mst_results
+/ground_truth_linkage_testing/icdar24-train-png
+/ground_truth_linkage_testing/icdar24-val-png
+/ground_truth_linkage_testing/scripts/annotated_linkage_visualizations

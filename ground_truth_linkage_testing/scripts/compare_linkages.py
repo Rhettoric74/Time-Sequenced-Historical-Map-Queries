@@ -75,9 +75,17 @@ def get_stats_from_results_file(results_filename):
 
 if __name__ == "__main__":
     depth_limit = 3
+    difficult_maps_sample = ["5797073_h2_w9.png", "8817002_h4_w4.png","0068010_h2_w7.png","0071008_h3_w7.png","7807309_h6_w7.png","7911000_h2_w2.png","7810246_h7_w2.png"]
     maps_sampled = ["5797073_h2_w9.png", "8817002_h4_w4.png","0068010_h2_w7.png","0071008_h3_w7.png","7807309_h6_w7.png","7911000_h2_w2.png","7810246_h7_w2.png"]
     random_map_sample = ['0041033_h2_w5.png', '0066014_h2_w2.png', '6756003_h3_w8.png', '6323028_h2_w3.png', '0066046_h2_w3.png', '5802011_h4_w4.png', '0231018_h2_w6.png', '6354084_h5_w5.png', '0071013_h2_w2.png', '0071018_h6_w2.png']
-    print(random_map_sample)
+    enough_multiword_phrases = []
+    for file in os.listdir("icdar24-train-png/train_images"):
+        THRESHOLD = 10
+        names_list = multiword_name_extraction.multiword_name_extraction_from_map(file)
+        if len(names_list) >= THRESHOLD:
+            enough_multiword_phrases.append(file)
+    print(len(enough_multiword_phrases))
+    #print(random_map_sample)
     descriptors_to_functions = {
         "distance_height_ratio_sin_angle_penalty": FeatureNode.distance_height_ratio_sin_angle_capitalization_penalty,
         "distance_only":FeatureNode.distance, "height_ratio_only":FeatureNode.height_ratio, "sin_angle_difference_only":FeatureNode.sin_angle_difference, 
@@ -88,10 +96,9 @@ if __name__ == "__main__":
     weights_list = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 10, 0], [1, 0, 10], [1, 10, 10]]
     for name, distance_function in descriptors_to_functions.items():
         results_dict = {"connecting_method": "MST", "distance_function":"euclidean_distance", "depth_limit":depth_limit, "map_results":[]}
-        print(len(weights_list))
-        for map in random_map_sample:
+        for map in enough_multiword_phrases:
             results_dict["map_results"].append(compare_linkages(map, depth_limit, LinkageMethod(prims_mst, distance_function)))
-        with open(os.getcwd().strip("/scripts") + "/mst_results/" + name + "_depth_limit_"  + "_depth_limit_" + str(depth_limit) + ".json", "w") as f:
+        with open(os.getcwd().strip("/scripts") + "/mst_results/" + name + "_depth_limit_" + str(depth_limit) + ".json", "w") as f:
             json.dump(results_dict, f)
             print("finished", name)
     best_recall = - float("inf")
@@ -111,7 +118,7 @@ if __name__ == "__main__":
                 best_recall = recall
                 best_weights = weights
             print() """
-    print(best_function, best_recall, best_weights)
+    print(best_function, best_recall)
 
 
 
