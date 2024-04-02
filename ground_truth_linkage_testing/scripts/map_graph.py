@@ -3,8 +3,10 @@ import math
 import sys
 import numpy as np
 import time
+import os
 from multiword_name_extraction import extract_map_data_from_all_annotations
 sys.path.append("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts")
+sys.path.append(os.path.dirname("config.py"))
 import coordinate_geometry
 import copy
 PADDING_RATIO = 1.2

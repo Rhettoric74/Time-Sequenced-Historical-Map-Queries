@@ -17,6 +17,7 @@ sys.path.append(os.path.join(os.getcwd(), "scripts/multiword_queries"))
 from multiword_queries.multiword_query import search_from_node
 from place_node import PlaceNode
 from pixel_georefereferencing import transform_bbox
+import list_text_from_geojson
 
 def find_image_url_in_fields(field_values):
     link_indicator = "'Download 1': ['<a href="
@@ -52,6 +53,8 @@ def load_image(map_id, image_content, cropping = None):
 
     # Decode the JP2 image using opencv
     image = cv2.imread("map_images/" +map_id + '.jp2')
+    if cropping == None:
+        return image
     # Check if the image was read successfully
     # make sure that image cropping does not go out of array bounds
     height, width, channels = image.shape
@@ -66,6 +69,37 @@ def load_image(map_id, image_content, cropping = None):
         if cropping != None:
             image = image[min(cropping[1], cropping[3]):max(cropping[1], cropping[3]), min(cropping[0], cropping[2]): max(cropping[0], cropping[2])]
     return image
+def make_tiles_from_image(image_filepath, num_tiles_across, num_tiles_down):
+   
+    # Decode the JP2 image using opencv
+    image = cv2.imread(image_filepath)
+    # Check if the image was read successfully
+    # make sure that image cropping does not go out of array bounds
+    height, width, channels = image.shape
+    map_id = image_filepath.strip(".jp2")
+    pixel_dimensions = (height // num_tiles_across, width // num_tiles_down)
+    for i in range(num_tiles_across):
+        for j in range(num_tiles_down):
+            image_tile = image[i * pixel_dimensions[0]: (i + 1) * pixel_dimensions[0], j * pixel_dimensions[1]:(j + 1) * pixel_dimensions[1]]
+            # image_tile = cv2.cvtColor(image_tile, cv2.COLOR_BGR2RGB)
+            image_tile_filepath = map_id + "_tiles/" +  map_id.strip("map_images/") + "_h" + str(i) + "_w" + str(j) + ".png"
+            pixel_bounding = [[j * pixel_dimensions[1], i * pixel_dimensions[0]], [(j + 1) * pixel_dimensions[1], (i + 1) * pixel_dimensions[0]]]
+            label_list = list_text_from_geojson.list_text_from_geojson(map_id.strip("map_images/") + ".geojson", pixel_bounding)
+            print(image_tile_filepath)
+            print(pixel_bounding)
+            cv2.imwrite(image_tile_filepath, image_tile)
+            label_list_filepath = map_id + "_labels_lists/"
+            if not os.path.exists(label_list_filepath):
+                # Create the directory and all its parents if they don't exist
+                os.makedirs(label_list_filepath)
+            if not os.path.exists(image_tile_filepath):
+                # Create the directory and all its parents if they don't exist
+                os.makedirs(image_tile_filepath)
+            label_list_filepath += "h" + str(i) + "_w" + str(j) + ".txt"
+            with open(label_list_filepath, "w", encoding="utf-8") as fw:
+                fw.write(str(label_list))
+
+
 
 def get_cropping_bbox(img_coords):
     """
@@ -97,6 +131,7 @@ def find_image_cropping(map_id, account):
             if fuzz.ratio(feature_name.upper(), feature["properties"]["text"].upper()) >= account.fuzzy_ratio:
                 image_coordinates = feature["properties"]["img_coordinates"]
                 return get_cropping_bbox(image_coordinates)
+
 def find_multiword_image_cropping(map_id, account, largest_bounding):
     map_graph = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_id + ".geojson")
     overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
@@ -140,6 +175,11 @@ def estimate_image_size(map_id):
                 if point[1] < topmost:
                     topmost = point[1]
         return (leftmost, topmost, rightmost, bottommost)
+
+def download_map_image(map_id):
+    ids_to_urls = map_ids_to_image_urls()
+    image = load_image(map_id, get_image(map_id, ids_to_urls))
+    cv2.imwrite("map_images/" + map_id + ".jp2", image)
     
 def extract_images_from_accounts_file(filename, max_sample = None, use_place_node = False):
     """

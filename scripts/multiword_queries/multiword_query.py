@@ -7,14 +7,13 @@ sys.path.append("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis")
 import config
 from scripts.geo_entity import GeoEntity
 from scripts.coordinate_geometry import extract_bounds
-import copy
 from fuzzywuzzy import fuzz
 import random
 from scripts.extract_year import extract_years
 from scripts.match_countries_to_map_ids import countries_to_ids_dict
 
 
-def multiword_query(place_name, fclasses = None, similarity_threshold = 85, connecting_function = half_prims_mst):
+def multiword_query(place_name, fclasses = None, similarity_threshold = 85, connecting_function = prims_mst):
     entity = GeoEntity(place_name, fclasses)
     matches = {}
     i = 0
@@ -33,9 +32,10 @@ def multiword_query(place_name, fclasses = None, similarity_threshold = 85, conn
             print(str(i) + " geojson files searched")
         i += 1
         #print(map_file)
-        if os.path.isfile("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_file + ".geojson"):
-            map_graph = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_file + ".geojson")
+        if os.path.isfile(config.GEOJSON_FOLDER + map_file + ".geojson"):
+            map_graph = MapGraph(config.GEOJSON_FOLDER + map_file + ".geojson")
         else:
+            print(config.GEOJSON_FOLDER + map_file + ".geojson")
             continue
         overlapping_nodes = [node for node in map_graph.nodes if entity.within_bounding(node.coordinates)]
         if len(overlapping_nodes) > 0 and len(overlapping_nodes) < 500:
@@ -114,15 +114,16 @@ def search_from_node(node, depth, path = []):
                 paths.append(new_path)
     return paths
 if __name__ == "__main__":
-    queries = ["Cedar Rapids", "Carson City", "South Dakota"]
+    queries = ["Democratic Republic of the Congo"]
+    print(os.path.isdir("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/ground_truth_linkage_testing/mst_results/mst_distance_height_ratio_sin_angle_capitalization"))
     for query in queries:
         try:
             print(query)
             query_results = {query:dated_multiword_query(query)}
             query_results["geojson"] = GeoEntity(query).geojson
-            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/" + query + "_dates.json", "w") as fw:
+            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/" + query + "_dates.json", "w", encoding="utf-8") as fw:
                 json.dump(query_results, fw)
-            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/half_mst_distance_angle_capitalization_penalty/" + query + "_dates.json", "w") as fw:
+            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization/" + query + "_dates.json", "w", encoding="utf-8") as fw:
                 json.dump(query_results, fw)
         except Exception as e:
             print(e)

@@ -31,9 +31,14 @@ def transform_coords_list(coords_list):
             transformed_coords.append([lat_long[1], lat_long[0]])
     return transformed_coords
 
-            
-    
-    
+def convert_image_coords_to_indices(img_coords):
+    """Purpose: in some datasets for the geojson labels, the image coordinates are 
+    formatted as having negative y values. This function converts such coordinates into
+    non-negative integer format that can be used as indices for the image
+    Parameters: img_coords, a list of coordinates of the format
+        [[x1, y1], ... [xn, yn]]
+    Returns: a list that converts the y_coordinates to be non-negative and all coordinates to be integers"""
+    return [[int(x), math.fabs(int(y))] for x, y in img_coords]
     
 
 
