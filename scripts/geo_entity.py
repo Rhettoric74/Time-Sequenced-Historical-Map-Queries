@@ -78,9 +78,16 @@ class GeoEntity:
         return False
     def update_bounds(self, points):
         # check if the points should be the new bounding box
-        new_bounding = coordinate_geometry.extract_bounds(points, self.fclass)
-        if coordinate_geometry.bounding_box_area(new_bounding) > coordinate_geometry.bounding_box_area(new_bounding):
-            self.largest_bounding = new_bounding
+        # format points to be a singly-nested list of coorinates
+        # e.g. [[x1,y1],[x2,y2],...[xn,yn]]
+
+        if not isinstance(points[0], list):
+            points = [points]
+        while isinstance(points[0][0], list):
+            # remove unnecessary nesting of lists
+            points = points[0]
+        new_bounding = coordinate_geometry.extract_bounds(self.largest_bounding + points)
+        self.largest_bounding = new_bounding
 
     def overlap_confidence(self, coords):
         #TODO

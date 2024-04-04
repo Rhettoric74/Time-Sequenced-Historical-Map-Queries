@@ -43,6 +43,7 @@ def multiword_query(place_name, fclasses = None, similarity_threshold = 85, conn
             frontier = [overlapping_nodes[0]]
             explored = []
             closest_variant = None
+            closest_node_sequence = None
             closest_match = 0
             iterations = 0
             while frontier != []:
@@ -64,19 +65,23 @@ def multiword_query(place_name, fclasses = None, similarity_threshold = 85, conn
                             closest_variant = variant
                             closest_match = cur_ratio
                             print(joined_text)
+                            closest_node_sequence = node_sequence
                 for neighbor in cur_node.neighbors:
                     if neighbor not in explored and neighbor in overlapping_nodes:
                         frontier.append(neighbor)
             if closest_variant != None:
                 print(closest_variant)
                 all_points = []
-                for node in node_sequence:
+                for node in closest_node_sequence:
                     all_points += node.coordinates
                 if closest_variant not in matches:
                     matches[closest_variant] = [{"map_id":map_file, "fuzzy_ratio":closest_match, "year": None, "overlap_confidence": entity.overlap_confidence(all_points)}]
                 else:
                     matches[closest_variant].append({"map_id":map_file, "fuzzy_ratio":closest_match, "year": None, "overlap_confidence": entity.overlap_confidence(all_points)})
+                print(entity.largest_bounding)
                 entity.update_bounds(all_points)
+                print(all_points)
+                print(entity.largest_bounding)
                     #print(matches)
     
     matches["largest_bounding_box"] = entity.largest_bounding
@@ -114,7 +119,7 @@ def search_from_node(node, depth, path = []):
                 paths.append(new_path)
     return paths
 if __name__ == "__main__":
-    queries = ["Democratic Republic of the Congo"]
+    queries = ["Cape Town", "Corpus Christi", "Salt Lake City", "New Delhi", "New South Wales"]
     print(os.path.isdir("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/ground_truth_linkage_testing/mst_results/mst_distance_height_ratio_sin_angle_capitalization"))
     for query in queries:
         try:

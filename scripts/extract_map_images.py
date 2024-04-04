@@ -130,6 +130,8 @@ def find_image_cropping(map_id, account):
         for feature in map_data["features"]:
             if fuzz.ratio(feature_name.upper(), feature["properties"]["text"].upper()) >= account.fuzzy_ratio:
                 image_coordinates = feature["properties"]["img_coordinates"]
+                if config.COORD_SYSTEM == 'EPSG:3857':
+                    image_coordinates = coordinate_geometry.convert_image_coords_to_indices(image_coordinates)
                 return get_cropping_bbox(image_coordinates)
 
 def find_multiword_image_cropping(map_id, account, largest_bounding):
@@ -165,7 +167,10 @@ def estimate_image_size(map_id):
         topmost = float("inf")
         leftmost = float("inf")
         for feature in map_data["features"]:
-            for point in feature["properties"]["img_coordinates"]:
+            img_coordinates = feature["properties"]["img_coordinates"]
+            if config.COORD_SYSTEM == 'EPSG:3857':
+                img_coordinates = coordinate_geometry.convert_image_coords_to_indices(img_coordinates)
+            for point in img_coordinates:
                 if point[0] > rightmost:
                     rightmost = point[0]
                 if point[1] > bottommost:

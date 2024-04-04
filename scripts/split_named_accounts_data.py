@@ -78,8 +78,9 @@ if __name__ == "__main__":
     with open("analyzed_features/french_cities.txt", "r", encoding="utf-8") as fp:
         french_cities_list = fp.readlines()
     french_cities_list = [city_name.strip("\n") + "_dates.json" for city_name in french_cities_list]
-    for accounts_filename in french_cities_list:
-        pn = PlaceNode("analyzed_features/" + dirname + "/" + accounts_filename)
+    for accounts_filename in os.listdir("scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization"):
+        # pn = PlaceNode("analyzed_features/" + dirname + "/" + accounts_filename)
+        pn = PlaceNode("scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization/" + accounts_filename)
         accounts_list = pn.list_accounts_in_order(True, 60)
         if len(accounts_list) > 5 or (len(accounts_list) > 0 and check_accounts_purity(accounts_list)[1] < 0.9):
             plot_named_accounts(accounts_list)
