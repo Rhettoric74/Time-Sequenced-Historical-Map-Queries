@@ -101,7 +101,7 @@ def make_tiles_from_image(image_filepath, num_tiles_across, num_tiles_down):
 
 
 
-def get_cropping_bbox(img_coords):
+def get_cropping_bbox(img_coords, use_scale = True):
     """
     Purpose: Given a list of image coordinates, find a cropping that goes around the bounding box of those coordinates
     Params: img_coords, a list of 2-d integer pixel coordinates from the map image
@@ -121,8 +121,15 @@ def get_cropping_bbox(img_coords):
         if point[0] < leftmost_coord:
             leftmost_coord = point[0]
         if point[0] > rightmost_coord:
-            rightmost_coord = point[0]
-    return (max(0,leftmost_coord - 300), max(0, topmost_coord - 300), rightmost_coord + 300, bottommost_coord + 300)
+            rightmost_coord = point[0]     
+    if not use_scale:
+        return (max(0,leftmost_coord - 300), max(0, topmost_coord - 300), rightmost_coord + 300, bottommost_coord + 300)
+    else:
+        scaled_bbox = coordinate_geometry.scale_bbox([[leftmost_coord, topmost_coord], [rightmost_coord, bottommost_coord]], 5)      
+        # convert height indices back into positive numbers
+        print("scaling bbox")
+        scaled_bbox = coordinate_geometry.convert_image_coords_to_indices(scaled_bbox)
+        return scaled_bbox[0] + scaled_bbox[1]
 def find_image_cropping(map_id, account):
     feature_name = account.variant_name
     with open(config.GEOJSON_FOLDER +  map_id + ".geojson") as json_file:
@@ -205,7 +212,9 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
     else:
         accounts_list = list_accounts_in_order(filename)
     if max_sample != None and max_sample < len(accounts_list):
+        # temporary change: retrieve maps that have smallest overlap confidence (big labels that changed the bounds)
         accounts_list = random.sample(accounts_list, max_sample)
+        # accounts_list = sorted(accounts_list, key = lambda account : account.overlap_confidence)[:min(len(accounts_list), max_sample)]
         accounts_list.sort()
     print(len(accounts_list))
     counter = 1
@@ -218,7 +227,10 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account))
             else:
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_multiword_image_cropping(account.map_id, account, largest_bounding)) """
-            image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), transform_bbox(account.map_id, coordinate_geometry.scale_bbox(largest_bounding, 4)))
+            if account.img_coordinates == None:
+                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), transform_bbox(account.map_id, coordinate_geometry.scale_bbox(largest_bounding, 4)))
+            else:
+                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), get_cropping_bbox(account.img_coordinates))
             converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             images.append(converted_image)
         except Exception as e:

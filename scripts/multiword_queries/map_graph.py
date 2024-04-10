@@ -24,6 +24,8 @@ class FeatureNode:
         self.text = str(feature_obj["properties"]["text"])
         self.capitalization = self.text.isupper()
         self.img_coordinates = feature_obj["properties"]["img_coordinates"]
+        if config.COORD_SYSTEM != "EPSG:4326":
+            self.img_coordinates = coordinate_geometry.convert_image_coords_to_indices(self.img_coordinates)
         self.minimum_bounding_box = coordinate_geometry.convex_hull_min_area_rect(self.img_coordinates)
         self.post_ocr = feature_obj["properties"]["postocr_label"]
         self.score = feature_obj["properties"]["score"]

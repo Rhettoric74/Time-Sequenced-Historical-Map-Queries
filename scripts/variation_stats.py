@@ -3,11 +3,13 @@ import matplotlib.pyplot as plt
 from fuzzywuzzy import fuzz
 
 class NamedAccount:
-    def __init__(self, variant_name, year, map_id, fuzzy_ratio = None):
+    def __init__(self, variant_name, year, map_id, fuzzy_ratio = None, overlap_confidence = 1, img_coordinates = None):
         self.variant_name = variant_name
         self.year = year
         self.map_id = map_id
         self.fuzzy_ratio = fuzzy_ratio
+        self.overlap_confidence = 1
+        self.img_coordinates = img_coordinates
     def __repr__(self):
         return str(self.year) + ": " + str(self.variant_name)
     def __lt__(self, other):
@@ -27,9 +29,21 @@ def list_accounts_in_order(filename, combine_similar_variants = False, similarit
         if combine_similar_variants == True:
             obj = combine_similar_variant_names(obj, similarity_threshold)
         for city in obj.keys():
+            print(city)
             for variant in obj[city].keys():
-                for id, year in obj[city][variant].items():
-                    accounts_list.append(NamedAccount(variant, year, id))
+                for account in obj[city][variant]:
+                    print(account)
+                    year = account["year"]
+                    id = account["map_id"]
+                    fuzzy_ratio = None
+                    if "fuzzy_ratio" in account:
+                        fuzzy_ratio = account["fuzzy_ratio"]
+                    overlap_confidence = None
+                    if "overlap_confidence" in account:
+                        overlap_confidence = account["overlap_confidence"]
+                    if "img_coordinates" in account:
+                        img_coordinates = account["img_coordinates"]
+                    accounts_list.append(NamedAccount(variant, year, id, fuzzy_ratio, overlap_confidence, img_coordinates))
         accounts_list.sort()
         return accounts_list
 def combine_similar_variant_names(json_obj, similarity_threshold = 85):

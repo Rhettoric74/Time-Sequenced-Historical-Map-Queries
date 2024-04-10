@@ -70,7 +70,7 @@ class PlaceNode(GeoEntity):
         accounts_list = []
         for name_variant_node in self.name_variant_nodes:
             for attestation in name_variant_node.attestations:
-                accounts_list.append(NamedAccount(name_variant_node.name_variant, attestation.year, attestation.map_id, attestation.fuzzy_ratio))
+                accounts_list.append(NamedAccount(name_variant_node.name_variant, attestation.year, attestation.map_id, attestation.fuzzy_ratio, attestation.overlap_confidence, attestation.img_coordinates))
         accounts_list.sort()
         return accounts_list
 

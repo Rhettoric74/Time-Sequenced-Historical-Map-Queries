@@ -71,13 +71,15 @@ def multiword_query(place_name, fclasses = None, similarity_threshold = 85, conn
                         frontier.append(neighbor)
             if closest_variant != None:
                 print(closest_variant)
-                all_points = []
+                all_points = closest_node_sequence[0].coordinates
+                img_coordinates = []
                 for node in closest_node_sequence:
-                    all_points += node.coordinates
+                    img_coordinates += node.img_coordinates
+                print(img_coordinates)
                 if closest_variant not in matches:
-                    matches[closest_variant] = [{"map_id":map_file, "fuzzy_ratio":closest_match, "year": None, "overlap_confidence": entity.overlap_confidence(all_points)}]
+                    matches[closest_variant] = [{"map_id":map_file, "fuzzy_ratio":closest_match, "year": None, "overlap_confidence": entity.overlap_confidence(all_points), "img_coordinates":img_coordinates}]
                 else:
-                    matches[closest_variant].append({"map_id":map_file, "fuzzy_ratio":closest_match, "year": None, "overlap_confidence": entity.overlap_confidence(all_points)})
+                    matches[closest_variant].append({"map_id":map_file, "fuzzy_ratio":closest_match, "year": None, "overlap_confidence": entity.overlap_confidence(all_points), "img_coordinates":[img_coordinates]})
                 print(entity.largest_bounding)
                 entity.update_bounds(all_points)
                 print(all_points)
@@ -119,7 +121,7 @@ def search_from_node(node, depth, path = []):
                 paths.append(new_path)
     return paths
 if __name__ == "__main__":
-    queries = ["Cape Town", "Corpus Christi", "Salt Lake City", "New Delhi", "New South Wales"]
+    queries = ["Cote d'Ivoire", "West Virginia", "Colorado Springs", "Ann Arbor"]
     print(os.path.isdir("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/ground_truth_linkage_testing/mst_results/mst_distance_height_ratio_sin_angle_capitalization"))
     for query in queries:
         try:
