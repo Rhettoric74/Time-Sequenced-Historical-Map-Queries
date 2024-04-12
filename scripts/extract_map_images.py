@@ -230,7 +230,7 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
             if account.img_coordinates == None:
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), transform_bbox(account.map_id, coordinate_geometry.scale_bbox(largest_bounding, 4)))
             else:
-                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), get_cropping_bbox(account.img_coordinates))
+                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), get_cropping_bbox(coordinate_geometry.convert_image_coords_to_indices(account.img_coordinates)))
             converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             images.append(converted_image)
         except Exception as e:

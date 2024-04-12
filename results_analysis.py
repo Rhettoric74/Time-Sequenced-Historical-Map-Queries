@@ -1,7 +1,7 @@
 import json
 import os
 import numpy as np
-results_folder = "scripts\multiword_queries\multiword_query_results\mst_distance_height_ratio_sin_angle_capitalization"
+results_folder = "scripts/multiword_queries/multiword_query_results/most_populous_multiword_cities"
 maps_per_city = []
 timespans = []
 variants_recognized = []

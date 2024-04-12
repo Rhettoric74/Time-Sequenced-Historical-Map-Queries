@@ -44,3 +44,5 @@ def match_countries_to_map_ids(country_names, map_dir):
 global countries_to_ids_dict
 with open("countries_to_map_ids.json") as fp:
     countries_to_ids_dict = json.load(fp)
+    # add Hong Kong maps to the list, use the same ones as China
+    countries_to_ids_dict["Hong Kong"] = countries_to_ids_dict["China"]
