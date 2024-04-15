@@ -248,8 +248,9 @@ def scale_bbox(bounding_box, scale_coeff):
     width = bounding_box[1][0] - bounding_box[0][0]
     height = bounding_box[1][1] - bounding_box[0][1]
     center = [bounding_box[0][0] + (width / 2), bounding_box[0][1] + (height / 2)]
+    print("center:", center)
     new_bbox = [[center[0] - (width * scale_coeff / 2), center[1] - (height * scale_coeff / 2)], 
-                [center[0] + (height * scale_coeff / 2), center[1] + (height * scale_coeff / 2)]]
+                [center[0] + (width * scale_coeff / 2), center[1] + (height * scale_coeff / 2)]]
     print(new_bbox)
     return new_bbox
 

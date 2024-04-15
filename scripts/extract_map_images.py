@@ -58,10 +58,10 @@ def load_image(map_id, image_content, cropping = None):
     # Check if the image was read successfully
     # make sure that image cropping does not go out of array bounds
     height, width, channels = image.shape
-    cropping[1] = min(width, max(cropping[1], 0))
-    cropping[3] = min(width, max(cropping[3], 0))
-    cropping[0] = min(height, max(cropping[0], 0))
-    cropping[2] = min(height, max(cropping[2], 0))
+    cropping[1] = min(height, max(cropping[1], 0))
+    cropping[3] = min(height, max(cropping[3], 0))
+    cropping[0] = min(width, max(cropping[0], 0))
+    cropping[2] = min(width, max(cropping[2], 0))
     print(cropping)
 
     if image is not None:
@@ -121,7 +121,8 @@ def get_cropping_bbox(img_coords, use_scale = True):
         if point[0] < leftmost_coord:
             leftmost_coord = point[0]
         if point[0] > rightmost_coord:
-            rightmost_coord = point[0]     
+            rightmost_coord = point[0]
+    print("computed boundings:",[leftmost_coord, topmost_coord, rightmost_coord, bottommost_coord])     
     if not use_scale:
         return (max(0,leftmost_coord - 300), max(0, topmost_coord - 300), rightmost_coord + 300, bottommost_coord + 300)
     else:
@@ -212,8 +213,8 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
     else:
         accounts_list = list_accounts_in_order(filename)
     if max_sample != None and max_sample < len(accounts_list):
-        # temporary change: retrieve maps that have smallest overlap confidence (big labels that changed the bounds)
         accounts_list = random.sample(accounts_list, max_sample)
+        # temporary change: retrieve maps that have smallest overlap confidence (big labels that changed the bounds)
         # accounts_list = sorted(accounts_list, key = lambda account : account.overlap_confidence)[:min(len(accounts_list), max_sample)]
         accounts_list.sort()
     print(len(accounts_list))
@@ -230,7 +231,7 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
             if account.img_coordinates == None:
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), transform_bbox(account.map_id, coordinate_geometry.scale_bbox(largest_bounding, 4)))
             else:
-                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), get_cropping_bbox(coordinate_geometry.convert_image_coords_to_indices(account.img_coordinates)))
+                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), get_cropping_bbox(account.img_coordinates))
             converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             images.append(converted_image)
         except Exception as e:
