@@ -9,7 +9,11 @@ sys.path.append("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries
 sys.path.append(os.path.dirname("config.py"))
 import coordinate_geometry
 import copy
-PADDING_RATIO = 1.2
+
+# can change this constant from one to multiply a padding to the padded_bounding_box attribute
+# so far this attribute has not been used.
+PADDING_RATIO = 1
+        
 class FeatureNode:
     def __init__(self, feature_obj):
         self.vertices = feature_obj["vertices"]
@@ -23,6 +27,24 @@ class FeatureNode:
         self.truncated = feature_obj["truncated"]
         self.num_letters = len([ch for ch in self.text if ch.isalpha()])
         self.capitalization = self.text.isupper()
+    def equals(self, other):
+        """Consider two FeatureNodes (i.e. text labels) identical if they have the same text and vertices
+        does not override the built-in __eq__ method in order to allow objects to be hashed normally"""
+        return (self.text == other.text) and (self.vertices ==  other.vertices)
+    def get_ground_truth_linkages(map_filename):
+        """Purpose: create a list of FeatureNodes containing the linkages contained in the ground truth file
+        Parameters: map_filename, a string filename of the map image to retrieve the ground truth Phrases for
+        Returns: a doubly-nested list of phrases for the given map with all groups of labels from the annotations file."""
+        phrases_list = []
+        map_data = extract_map_data_from_all_annotations(map_filename)
+        for group in map_data["groups"]:
+            cur_list = []
+            for label in group:
+                cur_node = FeatureNode(label)
+                cur_list.append(cur_node)
+            phrases_list.append(cur_list)
+
+        return phrases_list
     def get_height(self):
         """
         Gives height dimension of the label's bounding box. If the label is multiple characters long, it is assumed that
@@ -69,6 +91,20 @@ class FeatureNode:
             ])
         distances = [coordinate_geometry.euclidean_distance(s, o) for s in medians[0] for o in medians[1]]
         return min(distances)
+    class EdgeCostFunction:
+        """Purpose: creates an edge cost function with customized weighting of the features.
+        The function takes the form:
+        distance*(height_ratio**a)*(1 + b*sin_angle_difference)*(1 + c*capitalization_difference)
+        where a, b, and c, are the weights this function is instantiated with"""
+        def __init__(self, weights):
+            self.a = weights[0]
+            self.b = weights[1]
+            self.c = weights[2]
+        def __call__(self, label1, label2):
+            edge_cost =  FeatureNode.distance(label1, label2) * (FeatureNode.height_ratio(label1, label2) ** self.a) 
+            edge_cost *= (1 + self.b * FeatureNode.sin_angle_difference(label1, label2)) * (1 + self.c * FeatureNode.capitalization_difference(label1, label2))
+            return edge_cost
+            
     def height_difference(self, other):
         return math.fabs(self.get_height() - other.get_height())
     def height_ratio(self, other):
@@ -76,6 +112,13 @@ class FeatureNode:
         Purpose: make the height difference feature scale better with the size of the bounding boxes, by returning the ratio of their sizes instead 
         of their absolute value difference."""
         return max(self.get_height() / other.get_height(), other.get_height() / self.get_height())
+    def capitalization_difference(self, other):
+        """Purpose: represent whether the two labels have different capitalization
+        Parameters: self and other, two FeatureNode objects to compare.
+        Returns: 0 if the labels are either both in all caps or neither in all caps, 1 otherwise"""
+        if self.capitalization != other.capitalization and self.num_letters > 1 and other.num_letters > 1:
+            return 1
+        return 0
     def distance_height_ratio(self, other):
         return self.distance(other) * self.height_ratio(other)
     def overlays(self, other):
@@ -118,6 +161,7 @@ class FeatureNode:
     def distance_height_ratio_sin_angle_capitalization_penalty(self, other):
         return self.distance_sin_angle_capitalization_penalty(other) * self.height_ratio(other)
     
+    
     def to_vector(self, weights = [1000, 100, 100]):
         """Purpose: gives a vector representation of the text label
         Returns: a numpy array containing the label center location, height, capitalization, and angle"""
@@ -125,8 +169,21 @@ class FeatureNode:
         if self.capitalization:
             c = 1
         return np.array([self.minimum_bounding_box[0][0], self.minimum_bounding_box[0][1], weights[0] * self.get_height(), weights[1] * self.capitalization, c, weights[2] * self.get_angle()])
-    
-def prims_mst(nodes_list, distance_func = FeatureNode.distance):
+
+class EdgeCostFunction:
+        """Purpose: creates an edge cost function with customized weighting of the features.
+        The function takes the form:
+        distance*(height_ratio**a)*(1 + b*sin_angle_difference)*(1 + c*capitalization_difference)
+        where a, b, and c, are the weights this function is instantiated with"""
+        def __init__(self, weights):
+            self.a = weights[0]
+            self.b = weights[1]
+            self.c = weights[2]
+        def __call__(self, label1, label2):
+            edge_cost =  FeatureNode.distance(label1, label2) * (FeatureNode.height_ratio(label1, label2) ** self.a) 
+            edge_cost *= (1 + self.b * FeatureNode.distance) * (1 + self.c * FeatureNode.capitalization_difference(label1, label2))
+            return edge_cost    
+def prims_mst(nodes_list, distance_func = FeatureNode.EdgeCostFunction([1, 1, 1])):
     """
     Create a minimum spanning tree of a graph of nodes based on the distance function that is passed
     Parameters: nodes list: a list of Feature Nodes, 
@@ -200,35 +257,21 @@ def draw_complete_graph(nodes_list):
                 node.neighbors.add(other_node)
                 other_node.neighbors.add(other_node)
 class MapGraph:
-    def __init__(self, map_filename, connecting_function = None):
-        # time_loading = time.time()
-        map_data = extract_map_data_from_all_annotations(map_filename)
-        
-        # use a dictionary to prune away duplicate detections of the same word at the same location
-        map_terms = {}
-        self.nodes = []
-        for group in map_data["groups"]:
-            for label in group:
-                cur_node = FeatureNode(label)
-                if cur_node.text not in map_terms:
-                    map_terms[cur_node.text] = [cur_node]
-                    self.nodes.append(cur_node)
-                else:
-                    duplicate = False
-                    for node in map_terms[cur_node.text]:
-                        if cur_node.overlays(node):
-                            duplicate = True
-                    if not duplicate:
-                        map_terms[cur_node.text].append(cur_node)
-                        self.nodes.append(cur_node)
-                    """ else:
-                        print("duplicate removed:", cur_node.post_ocr) """
+    def __init__(self, map_filename = None, connecting_function = None):
 
-        #print("Time loading:", time.time() - time_loading)
-        if connecting_function != None:
-            time_connecting = time.time()
-            connecting_function(self.nodes)
-            #print("Time connecting:", time.time() - time_connecting)
+        self.nodes = []
+        if map_filename != None:
+            map_data = extract_map_data_from_all_annotations(map_filename)
+            for group in map_data["groups"]:
+                for label in group:
+                    cur_node = FeatureNode(label)
+                    self.nodes.append(cur_node)
+
+            #print("Time loading:", time.time() - time_loading)
+            if connecting_function != None:
+                #time_connecting = time.time()
+                connecting_function(self.nodes)
+                #print("Time connecting:", time.time() - time_connecting)
     def __repr__(self):
         sting_representation = ""
         for node in self.nodes:
@@ -241,6 +284,11 @@ class MapGraph:
         Purpose: represent all of the nodes in the graph as a matrix
         Returns: a matrix containing the vector representation of each node"""
         return np.array([node.to_vector(weights) for node in nodes_list])
+    def __contains__(self, node):
+        for graph_node in self.nodes:
+            if node.equals(graph_node):
+                return True
+        return False
 
 if __name__ == "__main__":
-    print(MapGraph("5797073_h2_w9.png", prims_mst))
+    print("\n".join([" ".join([label.text for label in phrase]) for phrase in FeatureNode.get_ground_truth_linkages("5797073_h2_w9.png")]))

@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import map_graph
-from map_graph import FeatureNode
+from map_graph import FeatureNode, MapGraph
 import multiword_name_extraction
 import list_multiword_paths
 import os
@@ -14,31 +14,31 @@ SINGLE_WORD_COLOR = (255, 0, 0)
 def draw_features_and_linkages(map_filename, map_graph, destination_filename = None, show_image = False, map_dir = "C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/ground_truth_linkage_testing/icdar24-train-png/train_images"):
     # Read an image
     image = cv2.imread(map_dir + "/" +  map_filename)
-    map_data = multiword_name_extraction.extract_map_data_from_all_annotations(map_filename)
-    annotated_phrases = multiword_name_extraction.find_multiword_phrases_in_map(map_data)
-    linked_phrases = list_multiword_paths.list_all_multiword_paths(map_graph, 3)
+    annotated_phrases = FeatureNode.get_ground_truth_linkages(map_filename)
     correctly_linked_nodes = set()
     incorrectly_linked_nodes = set()
     for annotated_phrase in annotated_phrases:
-        found = False
-        for phrase in linked_phrases:
-            joined_phrase = " ".join([node.text for node in phrase])
-            if joined_phrase == annotated_phrase:
-                found = True
-                for node in phrase:
-                    correctly_linked_nodes.add(node)
-        if not found:
-            for word in annotated_phrase.split(" "):
-                incorrectly_linked_nodes.add(word)
+        found = list_multiword_paths.search_node_sequence_in_graph(map_graph.nodes, annotated_phrase)
+        if found:
+            for node in annotated_phrase:
+                print(node.text)
+                correctly_linked_nodes.add(node)
+        else:
+            for node in annotated_phrase:
+                incorrectly_linked_nodes.add(node)
+    correctly_linked_subgraph = MapGraph()
+    correctly_linked_subgraph.nodes = list(correctly_linked_nodes)
+    incorrectly_linked_subgraph = MapGraph()
+    incorrectly_linked_subgraph.nodes = list(incorrectly_linked_nodes)
     #print(correctly_linked_nodes)
 
 
 
     for node in map_graph.nodes:
         label_color = SINGLE_WORD_COLOR
-        if node in correctly_linked_nodes:
+        if node in correctly_linked_subgraph:
             label_color = CORRECTLY_LINKED_COLOR
-        elif node.text in incorrectly_linked_nodes:
+        elif node in incorrectly_linked_subgraph:
             label_color = INCORRECTLY_LINKED_COLOR
         # Draw the rectangle on the original image
         box = cv2.boxPoints(node.minimum_bounding_box)
@@ -137,6 +137,6 @@ if __name__ == "__main__":
             draw_features_and_linkages(map_filename, mg, "mst_" + descriptor + "_" + map_filename) """
     map_filename = "5797073_h2_w9.png"
     mg = map_graph.MapGraph(map_filename)
-    map_graph.prims_mst(mg.nodes, FeatureNode.distance_height_ratio_sin_angle_capitalization_penalty)
+    map_graph.prims_mst(mg.nodes, FeatureNode.EdgeCostFunction([1.0, 0.25, 0.5]))
     map_annotations = multiword_name_extraction.extract_map_data_from_all_annotations(map_filename)
     draw_features_and_linkages(map_filename, mg, None, True)
