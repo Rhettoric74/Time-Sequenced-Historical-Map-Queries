@@ -4,15 +4,15 @@ sys.path.append(os.pardir)
 import json
 import random
 
-def extract_map_data_from_all_annotations(map_filename, data_filepath = "icdar24-train-png/annotations.json"):
-    with open(data_filepath, "r") as f:
+def extract_map_data_from_all_annotations(map_filename, annotations_filepath = "icdar24-train-png/annotations.json"):
+    with open(annotations_filepath, "r") as f:
         all_data = json.load(f)
         map_data = None
         for map in all_data:
             if map["image"] == map_filename:
                 return map
         if (map_data == None):
-            print("map not found")
+            print(map_filename + " not found")
             return None
 def find_multiword_phrases_in_map(map_data):
     names = []

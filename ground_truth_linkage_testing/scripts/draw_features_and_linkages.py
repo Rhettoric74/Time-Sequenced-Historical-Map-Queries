@@ -18,14 +18,14 @@ def draw_features_and_linkages(map_filename, map_graph, destination_filename = N
     correctly_linked_nodes = set()
     incorrectly_linked_nodes = set()
     for annotated_phrase in annotated_phrases:
-        found = list_multiword_paths.search_node_sequence_in_graph(map_graph.nodes, annotated_phrase)
-        if found:
-            for node in annotated_phrase:
-                print(node.text)
-                correctly_linked_nodes.add(node)
-        else:
-            for node in annotated_phrase:
-                incorrectly_linked_nodes.add(node)
+        if len(annotated_phrase) > 1:
+            found = list_multiword_paths.search_node_sequence_in_graph(map_graph.nodes, annotated_phrase)
+            if found:
+                for node in annotated_phrase:
+                    correctly_linked_nodes.add(node)
+            else:
+                for node in annotated_phrase:
+                    incorrectly_linked_nodes.add(node)
     correctly_linked_subgraph = MapGraph()
     correctly_linked_subgraph.nodes = list(correctly_linked_nodes)
     incorrectly_linked_subgraph = MapGraph()
@@ -64,7 +64,7 @@ def draw_features_and_linkages(map_filename, map_graph, destination_filename = N
         # draw lines to the neighboring bounding boxes
         for neighbor in node.neighbors:
             edge_color = INCORRECTLY_LINKED_COLOR
-            if neighbor in correctly_linked_nodes:
+            if neighbor in correctly_linked_subgraph:
                 edge_color = CORRECTLY_LINKED_COLOR
             rectangles = [node.minimum_bounding_box, neighbor.minimum_bounding_box]
             medians = [[], []]
@@ -135,8 +135,8 @@ if __name__ == "__main__":
             map_graph.prims_mst(mg.nodes, distance_function)
             map_annotations = multiword_name_extraction.extract_map_data_from_all_annotations(map_filename)
             draw_features_and_linkages(map_filename, mg, "mst_" + descriptor + "_" + map_filename) """
-    map_filename = "5797073_h2_w9.png"
+    map_filename = "8355000_h2_w7.png"
     mg = map_graph.MapGraph(map_filename)
-    map_graph.prims_mst(mg.nodes, FeatureNode.EdgeCostFunction([1.0, 0.25, 0.5]))
+    map_graph.prims_mst(mg.nodes, FeatureNode.EdgeCostFunction([1.51, 0.6, 0.36]))
     map_annotations = multiword_name_extraction.extract_map_data_from_all_annotations(map_filename)
-    draw_features_and_linkages(map_filename, mg, None, True)
+    draw_features_and_linkages(map_filename, mg, "example.png", True)

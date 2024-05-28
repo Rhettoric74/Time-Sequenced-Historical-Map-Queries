@@ -31,12 +31,13 @@ class FeatureNode:
         """Consider two FeatureNodes (i.e. text labels) identical if they have the same text and vertices
         does not override the built-in __eq__ method in order to allow objects to be hashed normally"""
         return (self.text == other.text) and (self.vertices ==  other.vertices)
-    def get_ground_truth_linkages(map_filename):
+    def get_ground_truth_linkages(map_filename, annotations_filepath = "icdar24-train-png/annotations.json"):
         """Purpose: create a list of FeatureNodes containing the linkages contained in the ground truth file
-        Parameters: map_filename, a string filename of the map image to retrieve the ground truth Phrases for
+        Parameters: map_filename, a string filename of the map image to retrieve the ground truth phrases for
+            annotations_filepath, a string of the json file containing the ground truth labels and linkages.
         Returns: a doubly-nested list of phrases for the given map with all groups of labels from the annotations file."""
         phrases_list = []
-        map_data = extract_map_data_from_all_annotations(map_filename)
+        map_data = extract_map_data_from_all_annotations(map_filename, annotations_filepath)
         for group in map_data["groups"]:
             cur_list = []
             for label in group:
@@ -257,11 +258,11 @@ def draw_complete_graph(nodes_list):
                 node.neighbors.add(other_node)
                 other_node.neighbors.add(other_node)
 class MapGraph:
-    def __init__(self, map_filename = None, connecting_function = None):
+    def __init__(self, map_filename = None, connecting_function = None, annotations_filepath = "icdar24-train-png/annotations.json"):
 
         self.nodes = []
         if map_filename != None:
-            map_data = extract_map_data_from_all_annotations(map_filename)
+            map_data = extract_map_data_from_all_annotations(map_filename, annotations_filepath)
             for group in map_data["groups"]:
                 for label in group:
                     cur_node = FeatureNode(label)
