@@ -26,7 +26,7 @@ def most_variants(geojson_obj):
     most_variants_found = -1
     higest_variants = None
     for feature in geojson_obj["features"]:
-        if len(feature["properties"]["variants"]) > most_variants_found:
+        if "variants" in feature["properties"].keys() and len(feature["properties"]["variants"]) > most_variants_found:
             # only include geojson objects that have usable geometries
             if type(feature["geometry"]) == dict:
                 higest_variants = feature
@@ -40,7 +40,7 @@ def find_fclasses(place_name):
     possibilities = ["P", "S", "T", "A", "H", "L"]
     fclasses = []
     for possibility in possibilities:
-        if place_request_index(place_name, possibility)["count"] > 0:
+        if len(place_request_index(place_name, possibility)["features"]) > 0:
             fclasses.append(possibility)
     return fclasses
 def find_most_variants_feature(place_name, fclasses = None):

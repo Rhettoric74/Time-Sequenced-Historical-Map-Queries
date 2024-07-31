@@ -121,23 +121,20 @@ def search_from_node(node, depth, path = []):
                 paths.append(new_path)
     return paths
 if __name__ == "__main__":
-    queries = ["Sault Ste Marie"]
+    queries = ["New Jersey", "New Brunswick"]
     """ with open("scripts/multiword_queries/15_most_populous_multiword_name_cities.txt", encoding="utf-8") as f:
         queries = f.readlines()
         queries = [query.strip("\n") for query in queries] """
     print(queries)
     print(os.path.isdir("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization/"))
     for query in queries:
-        try:
-            print(query)
-            query_results = {query:dated_multiword_query(query)}
-            query_results["geojson"] = GeoEntity(query).geojson
-            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/" + query + "_dates.json", "w", encoding="utf-8") as fw:
-                json.dump(query_results, fw)
-            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization/" + query + "_dates.json", "w", encoding="utf-8") as fw:
-                json.dump(query_results, fw)
-        except Exception as e:
-            print(e)
-            continue
+        print(query)
+        query_results = {query:dated_multiword_query(query)}
+        query_results["geojson"] = GeoEntity(query).geojson
+        with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/" + query + "_dates.json", "w", encoding="utf-8") as fw:
+            json.dump(query_results, fw)
+        with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization/" + query + "_dates.json", "w", encoding="utf-8") as fw:
+            json.dump(query_results, fw)
+       
         
 
