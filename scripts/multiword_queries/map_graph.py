@@ -4,7 +4,9 @@ import sys
 import os
 import numpy as np
 import time
-sys.path.append("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.abspath(os.path.join(current_dir, '..'))
+sys.path.append(parent_dir)
 sys.path.append(os.path.dirname("config.py"))
 import config
 import coordinate_geometry
@@ -114,6 +116,12 @@ class FeatureNode:
         Returns the distance between the centroids of the two labels, multiplied by 1 plus the sine of their angle difference.
         This is done to discourage matching nearby labels that have very different angled text."""
         return self.distance(other) * (1 + self.sin_angle_difference(other))
+    def capitalization_difference(self, other):
+        """Check if two text labels have the same capitalization or not. Returns 1 if they are different and 0 if they
+        are the same"""
+        if self.capitalization != other.capitalization and self.num_letters > 1 and other.num_letters > 1:
+            return 1
+        return 0
     def distance_sin_angle_capitalization_penalty(self, other):
         """
         Returns the distance between the centroids of the two labels, multiplied by 1 plus the sine of their angle difference, 
@@ -125,6 +133,19 @@ class FeatureNode:
         return coeff * self.distance(other) * (1 + self.sin_angle_difference(other))
     def distance_height_ratio_sin_angle_capitalization_penalty(self, other):
         return self.distance_sin_angle_capitalization_penalty(other) * self.height_ratio(other)
+    class EdgeCostFunction:
+        """Purpose: creates an edge cost function with customized weighting of the features.
+        The function takes the form:
+        distance*(height_ratio**a)*(1 + b*sin_angle_difference)*(1 + c*capitalization_difference)
+        where a, b, and c, are the weights this function is instantiated with"""
+        def __init__(self, weights):
+            self.a = weights[0]
+            self.b = weights[1]
+            self.c = weights[2]
+        def __call__(self, label1, label2):
+            edge_cost =  FeatureNode.distance(label1, label2) * (FeatureNode.height_ratio(label1, label2) ** self.a) 
+            edge_cost *= (1 + self.b * FeatureNode.sin_angle_difference(label1, label2)) * (1 + self.c * FeatureNode.capitalization_difference(label1, label2))
+            return edge_cost
     
 def prims_mst(nodes_list, distance_func = FeatureNode.distance_height_ratio_sin_angle_capitalization_penalty):
     """
@@ -231,4 +252,4 @@ class MapGraph:
         return sting_representation
 
 if __name__ == "__main__":
-    print(MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/geojson_testr_syn/11320000.geojson", prims_mst))
+    print(MapGraph("home/yaoyi/olso9295/Time-Sequenced-Historical-Map-Queries/rumsey_57k_english/0879C.geojson", FeatureNode.EdgeCostFunction([1.76, 0.88, 0.88])))

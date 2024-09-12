@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 import map_graph
-from map_graph import FeatureNode, MapGraph
+from map_graph import FeatureNode, MapGraph, MahalanobisMetric
+from analyze_recall_data import find_mahalanobis_metric
 import multiword_name_extraction
 import list_multiword_paths
 import os
@@ -11,7 +12,7 @@ CORRECTLY_LINKED_COLOR = (0, 255, 0)
 INCORRECTLY_LINKED_COLOR = (0, 0, 255)
 SINGLE_WORD_COLOR = (255, 0, 0)
 
-def draw_features_and_linkages(map_filename, map_graph, destination_filename = None, show_image = False, map_dir = "C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/ground_truth_linkage_testing/icdar24-train-png/train_images"):
+def draw_features_and_linkages(map_filename, map_graph, destination_filename = None, show_image = False, map_dir = "icdar24-train-png/train_images"):
     # Read an image
     image = cv2.imread(map_dir + "/" +  map_filename)
     annotated_phrases = FeatureNode.get_ground_truth_linkages(map_filename)
@@ -135,8 +136,12 @@ if __name__ == "__main__":
             map_graph.prims_mst(mg.nodes, distance_function)
             map_annotations = multiword_name_extraction.extract_map_data_from_all_annotations(map_filename)
             draw_features_and_linkages(map_filename, mg, "mst_" + descriptor + "_" + map_filename) """
-    map_filename = "8355000_h2_w7.png"
+    map_filename = "0231018_h2_w6.png"
     mg = map_graph.MapGraph(map_filename)
-    map_graph.prims_mst(mg.nodes, FeatureNode.EdgeCostFunction([1.51, 0.6, 0.36]))
+    map_graph.prims_mst(mg.nodes, FeatureNode.EdgeCostFunction([1, 1, 1]))
     map_annotations = multiword_name_extraction.extract_map_data_from_all_annotations(map_filename)
-    draw_features_and_linkages(map_filename, mg, "example.png", True)
+    draw_features_and_linkages(map_filename, mg, "equation_1.png", True)
+    mg = map_graph.MapGraph(map_filename)
+    map_graph.distance_threshold_graph(mg.nodes)
+    map_annotations = multiword_name_extraction.extract_map_data_from_all_annotations(map_filename)
+    draw_features_and_linkages(map_filename, mg, "character_distance_threshold.png", True)

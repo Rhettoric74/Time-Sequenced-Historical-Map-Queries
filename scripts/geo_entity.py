@@ -32,7 +32,10 @@ class GeoEntity:
         self.largest_bounding = coordinate_geometry.extract_bounds(coordinates, self.fclass)
         # add the country the geoentity is in by converting the ccode from the geojson object
         cc = coco.CountryConverter()
-        self.country = cc.convert(resulting_geojson["properties"]["ccodes"], "ISO2", "name_short")
+        try:
+            self.country = cc.convert(resulting_geojson["properties"]["ccodes"], "ISO2", "name_short")
+        except:
+            self.country = None
     def from_geojson(self, geojson_obj):
         self.geojson = geojson_obj
         if "coordinates" in geojson_obj["geometry"].keys():

@@ -16,7 +16,7 @@ sys.path.append(os.path.join(os.getcwd(), "scripts/knowledge_graphs"))
 sys.path.append(os.path.join(os.getcwd(), "scripts/multiword_queries"))
 from multiword_queries.multiword_query import search_from_node
 from place_node import PlaceNode
-from pixel_georefereferencing import transform_bbox
+#from pixel_georefereferencing import transform_bbox
 import list_text_from_geojson
 
 def find_image_url_in_fields(field_values):
@@ -143,11 +143,11 @@ def find_image_cropping(map_id, account):
                 return get_cropping_bbox(image_coordinates)
 
 def find_multiword_image_cropping(map_id, account, largest_bounding):
-    map_graph = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_id + ".geojson")
+    map_graph = MapGraph(config.GEOJSON_FOLDER + map_id + ".geojson")
     overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
     feature_name = account.variant_name
 
-    map_graph = MapGraph("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/" + config.GEOJSON_FOLDER + map_id + ".geojson")
+    map_graph = MapGraph(config.GEOJSON_FOLDER + map_id + ".geojson")
     overlapping_nodes = [node for node in map_graph.nodes if coordinate_geometry.within_bounding(largest_bounding, node.coordinates)]
     prims_mst(overlapping_nodes, FeatureNode.distance_sin_angle_capitalization_penalty)
     frontier = [overlapping_nodes[0]]
@@ -228,10 +228,10 @@ def extract_images_from_accounts_file(filename, max_sample = None, use_place_nod
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_image_cropping(account.map_id, account))
             else:
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), find_multiword_image_cropping(account.map_id, account, largest_bounding)) """
-            if account.img_coordinates == None:
+            """  if account.img_coordinates == None:
                 image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), transform_bbox(account.map_id, coordinate_geometry.scale_bbox(largest_bounding, 4)))
-            else:
-                image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), get_cropping_bbox(account.img_coordinates))
+            else: """
+            image = load_image(account.map_id, get_image(account.map_id, ids_to_urls), get_cropping_bbox(account.img_coordinates))
             converted_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             images.append(converted_image)
         except Exception as e:

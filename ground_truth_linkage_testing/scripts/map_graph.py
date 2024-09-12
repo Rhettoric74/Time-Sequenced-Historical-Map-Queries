@@ -5,9 +5,10 @@ import numpy as np
 import time
 import os
 from multiword_name_extraction import extract_map_data_from_all_annotations
-sys.path.append("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts")
+sys.path.append(os.pardir + "/scripts")
 sys.path.append(os.path.dirname("config.py"))
 import coordinate_geometry
+from sklearn.linear_model import LogisticRegression
 import copy
 
 # can change this constant from one to multiply a padding to the padded_bounding_box attribute
@@ -105,7 +106,6 @@ class FeatureNode:
             edge_cost =  FeatureNode.distance(label1, label2) * (FeatureNode.height_ratio(label1, label2) ** self.a) 
             edge_cost *= (1 + self.b * FeatureNode.sin_angle_difference(label1, label2)) * (1 + self.c * FeatureNode.capitalization_difference(label1, label2))
             return edge_cost
-            
     def height_difference(self, other):
         return math.fabs(self.get_height() - other.get_height())
     def height_ratio(self, other):
@@ -183,7 +183,22 @@ class EdgeCostFunction:
         def __call__(self, label1, label2):
             edge_cost =  FeatureNode.distance(label1, label2) * (FeatureNode.height_ratio(label1, label2) ** self.a) 
             edge_cost *= (1 + self.b * FeatureNode.distance) * (1 + self.c * FeatureNode.capitalization_difference(label1, label2))
-            return edge_cost    
+            return edge_cost
+class LogisticRegressionEdgeCost:
+    def __init__(self, lr_model):
+        self.lr_model = lr_model
+    def __call__(self, label1, label2):
+        attributes = np.array([FeatureNode.distance(label1, label2), FeatureNode.height_ratio(label1, label2) - 1, FeatureNode.sin_angle_difference(label1, label2), FeatureNode.capitalization_difference(label1, label2)])
+        return self.lr_model.predict_proba([attributes])[0][0]
+class MahalanobisMetric:
+        """Compute the edge cost between two features based on the Mahalanobis metric with a learned positive semi-definite matrix
+        representing the weights of the attributes"""
+        def __init__(self, mmc):
+            self.mmc = mmc
+        def __call__(self, label1, label2):
+            feature_difference_vector = np.array([FeatureNode.distance(label1, label2), FeatureNode.height_ratio(label1, label2) - 1, FeatureNode.sin_angle_difference(label1, label2), FeatureNode.capitalization_difference(label1, label2)])
+            distance = self.mmc.pair_distance([[np.array([0,0,0,0]), feature_difference_vector]])[0]
+            return distance
 def prims_mst(nodes_list, distance_func = FeatureNode.EdgeCostFunction([1, 1, 1])):
     """
     Create a minimum spanning tree of a graph of nodes based on the distance function that is passed
@@ -206,6 +221,20 @@ def prims_mst(nodes_list, distance_func = FeatureNode.EdgeCostFunction([1, 1, 1]
         if node["parent"] != None:
             node["vertex"].neighbors.add(node["parent"]["vertex"])
             node["parent"]["vertex"].neighbors.add(node["vertex"])
+
+def distance_threshold_graph(nodes_list, distance_func = FeatureNode.distance):
+    visited_nodes = set()
+    for node in nodes_list:
+        visited_nodes.add(node)
+        word_length = max(node.minimum_bounding_box[1])
+        distance_threshold = 2 * word_length / len(node.text)
+        for other_node in nodes_list:
+            if other_node not in visited_nodes and distance_func(node, other_node) <= distance_threshold:
+                node.neighbors.add(other_node)
+                other_node.neighbors.add(node)
+    
+                
+
     
 def half_prims_mst(nodes_list, distance_func = FeatureNode.height_difference):
     """
@@ -257,19 +286,36 @@ def draw_complete_graph(nodes_list):
             if not (node is other_node):
                 node.neighbors.add(other_node)
                 other_node.neighbors.add(other_node)
+def connect_with_rf_classifier(nodes_list, rf_classifer):
+    visited_nodes = set()
+    for node in nodes_list:
+        visited_nodes.add(node)
+        for other_node in nodes_list:
+            if other_node not in visited_nodes:
+                features = [[node.distance(other_node), node.height_ratio(other_node), node.sin_angle_difference(other_node), node.capitalization_difference(other_node)]]
+                predicted_connectedness = rf_classifer.predict(features)
+                if predicted_connectedness[0] == 1:
+                    # draw edges between the two nodes if the rf_classifier predicts 1
+                    node.neighbors.add(other_node)
+                    other_node.neighbors.add(node) 
 class MapGraph:
     def __init__(self, map_filename = None, connecting_function = None, annotations_filepath = "icdar24-train-png/annotations.json"):
-
+        # to draw the edges for the graph included in the annotated data, set connecting_function parameter to "annotations"
         self.nodes = []
         if map_filename != None:
             map_data = extract_map_data_from_all_annotations(map_filename, annotations_filepath)
             for group in map_data["groups"]:
+                prev_node = None
                 for label in group:
                     cur_node = FeatureNode(label)
                     self.nodes.append(cur_node)
+                    if connecting_function == "annotations" and prev_node != None:
+                        prev_node.neighbors.add(cur_node)
+                        cur_node.neighbors.add(prev_node)
+                    prev_node = cur_node
 
             #print("Time loading:", time.time() - time_loading)
-            if connecting_function != None:
+            if connecting_function != None and not isinstance(connecting_function, str):
                 #time_connecting = time.time()
                 connecting_function(self.nodes)
                 #print("Time connecting:", time.time() - time_connecting)
@@ -280,6 +326,11 @@ class MapGraph:
             for neighbor in node.neighbors:
                 sting_representation += "    " + neighbor.text + "\n"
         return sting_representation
+    def count_edges(self):
+        count = 0
+        for node in self.nodes:
+            count += len(node.neighbors)
+        return count / 2
     def to_matrix(nodes_list, weights = [1000, 100, 100]):
         """
         Purpose: represent all of the nodes in the graph as a matrix
@@ -292,4 +343,6 @@ class MapGraph:
         return False
 
 if __name__ == "__main__":
-    print("\n".join([" ".join([label.text for label in phrase]) for phrase in FeatureNode.get_ground_truth_linkages("5797073_h2_w9.png")]))
+    #print("\n".join([" ".join([label.text for label in phrase]) for phrase in FeatureNode.get_ground_truth_linkages("5797073_h2_w9.png")]))
+    mg = MapGraph("5797073_h2_w9.png", distance_threshold_graph)
+    print(mg)
