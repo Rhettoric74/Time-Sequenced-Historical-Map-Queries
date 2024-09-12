@@ -13,4 +13,11 @@ notes.txt
 /ground_truth_linkage_testing/icdar24-val-png
 /ground_truth_linkage_testing/scripts/annotated_linkage_visualizations
 /rumsey_57k_english
+/ground_truth_linkage_testing/test_phrases_v1_19_usgs_nocap_p0.5_scc
+/ground_truth_linkage_testing/test_phrases_v1_19_usgs_nocap_p0.5_wcc
+/ground_truth_linkage_testing/val_data_for_zekuns_model
+/ground_truth_linkage_testing/weighted_mst_results
+/analyzed_features
 *.zip
+*.out
+*.slurm
