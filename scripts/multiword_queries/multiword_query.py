@@ -3,27 +3,44 @@ import json
 import sys
 import os
 import time
-sys.path.append("C:/Users/rhett/UMN_Github/HistoricalMapsTemporalAnalysis")
+current_dir = os.path.dirname(os.path.abspath(__file__))
+grandparent_dir = os.path.abspath(os.path.join(current_dir, '..', '..'))
+# Add the grandparent directory to the Python path
+sys.path.append(grandparent_dir)
 import config
-from scripts.geo_entity import GeoEntity
 from scripts.coordinate_geometry import extract_bounds
+from scripts.geo_entity import GeoEntity
 from fuzzywuzzy import fuzz
 import random
 from scripts.extract_year import extract_years
 from scripts.match_countries_to_map_ids import countries_to_ids_dict
+import multiprocessing as mp
 
+class LinkageMethod:
+    def connect(self, nodes_list):
+        self.connection_function(nodes_list, self.distance_function)
+    def __init__(self, connection_function, distance_function, weights = None):
+        self.connection_function = connection_function
+        self.weights = weights
+        if weights != None:
+            self.distance_function = distance_function(weights)
+        self.distance_function = distance_function
+        
 
-def multiword_query(place_name, fclasses = None, similarity_threshold = 85, connecting_function = prims_mst):
+def multiword_query(place_name, fclasses = None, similarity_threshold = 85, linkage_method = LinkageMethod(prims_mst, FeatureNode.EdgeCostFunction([1, 1, 1]))):
     entity = GeoEntity(place_name, fclasses)
     matches = {}
     i = 0
     relevant_maps = set()
-    if isinstance(entity.country, list):
-        print(entity.country)
-        for country in entity.country:
-            relevant_maps = relevant_maps.union(countries_to_ids_dict[country])
-    else:
-        relevant_maps = set(countries_to_ids_dict[entity.country])
+    try:
+        if isinstance(entity.country, list):
+            print(entity.country)
+            for country in entity.country:  
+                relevant_maps = relevant_maps.union(countries_to_ids_dict[country])
+        else:
+            relevant_maps = set(countries_to_ids_dict[entity.country])
+    except:
+        relevant_maps = relevant_maps.union(*countries_to_ids_dict.values()) 
     # cap the relevant maps to search at 10000 if there are more
     if len(list(relevant_maps)) > 10000:
         relevant_maps = random.sample(list(relevant_maps), 10000)
@@ -39,7 +56,7 @@ def multiword_query(place_name, fclasses = None, similarity_threshold = 85, conn
             continue
         overlapping_nodes = [node for node in map_graph.nodes if entity.within_bounding(node.coordinates)]
         if len(overlapping_nodes) > 0 and len(overlapping_nodes) < 500:
-            connecting_function(overlapping_nodes, FeatureNode.distance_sin_angle_capitalization_penalty)
+            linkage_method.connect(overlapping_nodes)
             frontier = [overlapping_nodes[0]]
             explored = []
             closest_variant = None
@@ -120,24 +137,40 @@ def search_from_node(node, depth, path = []):
             for new_path in new_paths:
                 paths.append(new_path)
     return paths
+def conduct_query_and_write_to_file(query, fclasses,  folder_name):
+    try:
+        query_results = {query:dated_multiword_query(query, fclasses=fclasses)}
+        query_results["geojson"] = GeoEntity(query, fclasses).geojson
+        with open("analyzed_features/input_queries/" + query + "_dates.json", "w", encoding="utf-8") as fw:
+            json.dump(query_results, fw)
+        with open("analyzed_features/" + folder_name + "/" + query + "_dates.json", "w", encoding="utf-8") as fw:
+            json.dump(query_results, fw)
+    except Exception as e:
+        print(e)
 if __name__ == "__main__":
-    queries = ["Sault Ste Marie"]
+    queries = []
+    with open("scripts/multiword_queries/lakes_list.txt", "r") as f:
+        count = 0
+        for line in f:
+            queries.append((line.strip("\n"), ["h"], "multiword_lakes"))
+            count += 1
+            if count >= 25:
+                break
+    print(len(queries))
+    with open("scripts/multiword_queries/multiword_osm_countries_list.txt", "r") as f:
+        for line in f:
+            queries.append((line.strip("\n"), ["a", "p"], "multiword_countries"))
+    print(queries)
     """ with open("scripts/multiword_queries/15_most_populous_multiword_name_cities.txt", encoding="utf-8") as f:
         queries = f.readlines()
         queries = [query.strip("\n") for query in queries] """
     print(queries)
-    print(os.path.isdir("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization/"))
-    for query in queries:
-        try:
-            print(query)
-            query_results = {query:dated_multiword_query(query)}
-            query_results["geojson"] = GeoEntity(query).geojson
-            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/analyzed_features/input_queries/" + query + "_dates.json", "w", encoding="utf-8") as fw:
-                json.dump(query_results, fw)
-            with open("C:/Users/rhett/code_repos/Time-Sequenced-Historical-Map-Queries/scripts/multiword_queries/multiword_query_results/mst_distance_height_ratio_sin_angle_capitalization/" + query + "_dates.json", "w", encoding="utf-8") as fw:
-                json.dump(query_results, fw)
-        except Exception as e:
-            print(e)
-            continue
+    pool = mp.Pool(mp.cpu_count())  # Uses all available CPU cores
+    results = pool.starmap(conduct_query_and_write_to_file, queries)
+
+    # Close the pool and wait for the work to finish
+    pool.close()
+    pool.join()
+    
         
 
